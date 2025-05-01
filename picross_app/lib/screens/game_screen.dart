@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/picross_grid.dart';
+import '../data/solution.dart';
 
 class GameScreen extends StatelessWidget {
   const GameScreen({super.key});
@@ -12,7 +13,7 @@ class GameScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
-            PicrossGrid(), // Tablero básico de 5x5
+            PicrossGrid(solution: defaultSolution),
           ],
         ),
       ),

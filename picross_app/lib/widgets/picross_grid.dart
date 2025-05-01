@@ -1,22 +1,67 @@
 import 'package:flutter/material.dart';
 import 'grid_cell.dart';
+import '../utils/hints.dart';
 
 class PicrossGrid extends StatelessWidget {
-  final int rows;
-  final int cols;
+  final List<List<int>> solution;
 
-  const PicrossGrid({
-    super.key,
-    this.rows = 5,
-    this.cols = 5,
-  });
+  const PicrossGrid({super.key, required this.solution});
 
   @override
   Widget build(BuildContext context) {
+    final rowHints = calculateRowHints(solution);
+    final colHints = calculateColHints(solution);
+    final size = solution.length;
+
     return Table(
-      children: List.generate(rows, (row) {
+      defaultColumnWidth: const FixedColumnWidth(40),
+      children: List.generate(size + 1, (row) {
         return TableRow(
-          children: List.generate(cols, (col) => const GridCell()),
+          children: List.generate(size + 1, (col) {
+            // Esquina vacía
+            if (row == 0 && col == 0) {
+              return const SizedBox(width: 40, height: 40);
+            }
+
+            // Guía de columnas (pueden salir hacia arriba)
+            if (row == 0 && col > 0) {
+              return Container(
+                alignment: Alignment.bottomCenter,
+                height: 40,
+                color: Colors.transparent,
+                child: OverflowBox(
+                  maxHeight: 80,
+                  alignment: Alignment.bottomCenter,
+                  child: Text(
+                    colHints[col - 1].join('\n'),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                ),
+              );
+            }
+
+            // Guía de filas (pueden salir hacia la izquierda)
+            if (col == 0 && row > 0) {
+              return Container(
+                alignment: Alignment.center,
+                height: 40,
+                color: Colors.transparent,
+                child: OverflowBox(
+                  maxWidth: 100,
+                  alignment: Alignment.center,
+                  child: Text(
+                    rowHints[row - 1].join(' '),
+                    textAlign: TextAlign.right,
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                ),
+              );
+            }
+
+            // Celda interactiva
+            return const GridCell();
+          }),
         );
       }),
     );

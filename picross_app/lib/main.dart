@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'data/solution.dart';
+import 'models/game_state.dart';
 import 'screens/game_screen.dart';
+import 'widgets/picross_grid.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => GameState(defaultSolution.length),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -12,7 +21,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Picross',
-      theme: ThemeData(useMaterial3: true),
       home: const GameScreen(),
     );
   }
