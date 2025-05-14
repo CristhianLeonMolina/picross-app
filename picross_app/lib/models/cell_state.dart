@@ -1,5 +1,5 @@
 enum CellState {
   empty,   // 🔲
   filled,  // ⬛
-  crossed, // ❌
+  marked, // ❌
 }

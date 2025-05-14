@@ -1,23 +1,35 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 enum CellState { empty, filled, marked }
 
+enum InteractionMode { fill, mark }
+
 class GameState extends ChangeNotifier {
-  final List<List<CellState>> board;
+  final List<List<CellState>> _cellStates;
+  InteractionMode _mode = InteractionMode.fill;
 
   GameState(int size)
-      : board = List.generate(size, (_) => List.filled(size, CellState.empty));
+      : _cellStates = List.generate(
+            size, (_) => List.generate(size, (_) => CellState.empty));
+
+  CellState getCellState(int row, int col) => _cellStates[row][col];
+
+  InteractionMode get mode => _mode;
 
   void toggleCell(int row, int col) {
-    if (board[row][col] == CellState.empty) {
-      board[row][col] = CellState.filled;
-    } else if (board[row][col] == CellState.filled) {
-      board[row][col] = CellState.marked;
+    if (_mode == InteractionMode.fill) {
+      _cellStates[row][col] =
+          _cellStates[row][col] == CellState.filled ? CellState.empty : CellState.filled;
     } else {
-      board[row][col] = CellState.empty;
+      _cellStates[row][col] =
+          _cellStates[row][col] == CellState.marked ? CellState.empty : CellState.marked;
     }
-    notifyListeners();
+    print("Toggled cell ($row, $col) to ${_cellStates[row][col]}"); // 👈 Agregado para consola
+    notifyListeners(); // 👈 Asegúrate de que esto esté
   }
 
-  CellState getCellState(int row, int col) => board[row][col];
+  void toggleMode() {
+    _mode = _mode == InteractionMode.fill ? InteractionMode.mark : InteractionMode.fill;
+    notifyListeners();
+  }
 }

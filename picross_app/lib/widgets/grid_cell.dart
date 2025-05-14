@@ -1,51 +1,46 @@
 import 'package:flutter/material.dart';
-import '../models/cell_state.dart';
+import '../models/game_state.dart';
 
-class GridCell extends StatefulWidget {
-  const GridCell({super.key});
+class GridCell extends StatelessWidget {
+  final int row;
+  final int col;
+  final GameState gameState;
 
-  @override
-  State<GridCell> createState() => _GridCellState();
-}
-
-class _GridCellState extends State<GridCell> {
-  CellState _state = CellState.empty;
-
-  void _toggleState() {
-    setState(() {
-      _state = CellState.values[(_state.index + 1) % CellState.values.length];
-    });
-  }
+  const GridCell({
+    super.key,
+    required this.row,
+    required this.col,
+    required this.gameState,
+  });
 
   @override
   Widget build(BuildContext context) {
-    Color color;
-    Widget content = const SizedBox.shrink();
+    final state = gameState.getCellState(row, col);
 
-    switch (_state) {
-      case CellState.empty:
-        color = Colors.white;
-        break;
+    Color color;
+    switch (state) {
       case CellState.filled:
         color = Colors.black;
         break;
-      case CellState.crossed:
-        color = Colors.white;
-        content = const Icon(Icons.close, color: Colors.red, size: 20);
+      case CellState.marked:
+        color = Colors.red;
         break;
+      default:
+        color = Colors.white;
     }
 
     return GestureDetector(
-      onTap: _toggleState,
+      onTap: () {
+        gameState.toggleCell(row, col);
+      },
       child: Container(
-        height: 40,
         width: 40,
+        height: 40,
+        margin: EdgeInsets.all(0),
         decoration: BoxDecoration(
           color: color,
-          border: Border.all(color: Colors.grey),
+          border: Border.all(color: Colors.purple),
         ),
-        alignment: Alignment.center,
-        child: content,
       ),
     );
   }
