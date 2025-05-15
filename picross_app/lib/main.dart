@@ -1,18 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'models/game_state.dart';
-import 'screens/game_screen.dart';
-import 'utils/solution.dart';
+import 'screens/home_screen.dart'; // Ajusta el path según tu estructura
 
 void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (_) => GameState(defaultSolution.length),
-      child: const MyApp(),
-    ),
-  );
+  runApp(const MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -20,11 +11,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Picross',
+      title: 'Picross App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.purple,
       ),
-      home: const GameScreen(),
+      home: const HomeScreen(), // Aquí llamamos a la pantalla de inicio
     );
   }
 }

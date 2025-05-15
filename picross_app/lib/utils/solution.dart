@@ -1,7 +1,9 @@
-const List<List<int>> defaultSolution = [
-  [1, 0, 1, 1, 1],
-  [1, 1, 0, 0, 1],
-  [0, 1, 1, 1, 0],
-  [1, 0, 0, 0, 1],
-  [1, 0, 1, 0, 1],
-];
+import 'dart:math';
+
+/// Genera una solución aleatoria de Picross de tamaño [size] x [size].
+List<List<int>> generateSolution(int size) {
+  final random = Random();
+  return List.generate(size, (_) {
+    return List.generate(size, (_) => random.nextBool() ? 1 : 0);
+  });
+}

@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/game_state.dart';
 import '../widgets/picross_grid.dart';
-import '../utils/solution.dart';
 
 class GameScreen extends StatelessWidget {
-  const GameScreen({super.key});
+  final List<List<int>> solution;
+  final GameState gameState;
+
+  const GameScreen({
+    super.key,
+    required this.solution,
+    required this.gameState,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +41,7 @@ class GameScreen extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.center,
                     child: PicrossGrid(
-                      solution: defaultSolution,
+                      solution: solution,
                       gameState: gameState,
                     ),
                   ),
