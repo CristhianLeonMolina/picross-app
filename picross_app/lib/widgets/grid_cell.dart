@@ -34,11 +34,11 @@ class GridCell extends StatelessWidget {
           style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
         );
       } else {
-        backgroundColor = Colors.black;
+        backgroundColor = Colors.purple;
       }
     } else if (state == CellState.marked) {
       if (isWrongMarked) {
-        backgroundColor = Colors.black; // Fondo gris si marcado mal
+        backgroundColor = Colors.purple; // Fondo gris si marcado mal
         content = const Text(
           'X',
           style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
@@ -59,7 +59,7 @@ class GridCell extends StatelessWidget {
         height: 40,
         decoration: BoxDecoration(
           color: backgroundColor,
-          border: Border.all(color: Colors.purple),
+          border: Border.all(color: Colors.black),
         ),
         alignment: Alignment.center,
         child: content,

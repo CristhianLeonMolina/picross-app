@@ -8,21 +8,17 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   void navigateToGame(BuildContext context, int size) {
-  final solution = generateSolution(size);
-  final gameState = GameState(size);
 
   Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => ChangeNotifierProvider.value(
-        value: gameState,
-        child: GameScreen(
-          solution: solution,
-          gameState: gameState,
-        ),
-      ),
+  context,
+  MaterialPageRoute(
+    builder: (context) => ChangeNotifierProvider(
+      create: (_) => GameState(size),
+      child: GameScreen(solution: generateSolution(size)),
     ),
-  );
+  ),
+);
+
 }
 
 
@@ -35,13 +31,20 @@ class HomeScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             for (var size in [5, 10, 15, 20])
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                  onPressed: () => navigateToGame(context, size),
-                  child: Text('Partida $size x $size'),
+              size==5 ? 
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: () => navigateToGame(context, size),
+                    child: Text(' Partida $size x $size '),
+                  ),
+                ) : Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: () => navigateToGame(context, size),
+                    child: Text('Partida $size x $size'),
+                  ),
                 ),
-              ),
           ],
         ),
       ),

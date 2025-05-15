@@ -32,16 +32,19 @@ class PicrossGrid extends StatelessWidget {
             // Guía de columnas (pueden salir hacia arriba)
             if (row == 0 && col > 0) {
               return Container(
-                alignment: Alignment.bottomCenter,
+                alignment: Alignment.center,
                 height: 40,
                 color: Colors.transparent,
-                child: OverflowBox(
-                  maxHeight: 80,
-                  alignment: Alignment.bottomCenter,
-                  child: Text(
-                    colHints[col - 1].join('\n'),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 12),
+                child : Padding(
+                  padding: const EdgeInsets.only(bottom: 4.0),
+                  child: OverflowBox(
+                    maxHeight: 180,
+                    alignment: Alignment.bottomCenter,
+                    child: Text(
+                      colHints[col - 1].join('\n'),
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 12),
+                    ),
                   ),
                 ),
               );
@@ -53,13 +56,16 @@ class PicrossGrid extends StatelessWidget {
                 alignment: Alignment.center,
                 height: 40,
                 color: Colors.transparent,
-                child: OverflowBox(
-                  maxWidth: 100,
-                  alignment: Alignment.center,
-                  child: Text(
-                    rowHints[row - 1].join(' '),
-                    textAlign: TextAlign.right,
-                    style: const TextStyle(fontSize: 12),
+                child : Padding(
+                  padding: const EdgeInsets.only(right: 4.0),
+                  child: OverflowBox(
+                    maxWidth: 200,
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      rowHints[row - 1].join(' '),
+                      textAlign: TextAlign.right,
+                      style: const TextStyle(fontSize: 12),
+                    ),
                   ),
                 ),
               );
