@@ -17,16 +17,17 @@ class GameState extends ChangeNotifier {
   InteractionMode get mode => _mode;
 
   void toggleCell(int row, int col) {
-    if (_mode == InteractionMode.fill) {
-      _cellStates[row][col] =
-          _cellStates[row][col] == CellState.filled ? CellState.empty : CellState.filled;
-    } else {
-      _cellStates[row][col] =
-          _cellStates[row][col] == CellState.marked ? CellState.empty : CellState.marked;
-    }
-    print("Toggled cell ($row, $col) to ${_cellStates[row][col]}"); // 👈 Agregado para consola
-    notifyListeners(); // 👈 Asegúrate de que esto esté
+  // Si la celda ya está marcada o rellenada, no permitir cambios
+  if (_cellStates[row][col] != CellState.empty) return;
+
+  if (_mode == InteractionMode.fill) {
+    _cellStates[row][col] = CellState.filled;
+  } else {
+    _cellStates[row][col] = CellState.marked;
   }
+  notifyListeners();
+}
+
 
   void toggleMode() {
     _mode = _mode == InteractionMode.fill ? InteractionMode.mark : InteractionMode.fill;
