@@ -28,7 +28,7 @@ class GridCell extends StatelessWidget {
 
     if (state == CellState.filled) {
       if (isWrongFilled) {
-        backgroundColor = Colors.black; // Fondo negro si relleno mal
+        backgroundColor = Colors.grey; // Fondo negro si relleno mal
         content = const Text(
           'X',
           style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
@@ -38,7 +38,7 @@ class GridCell extends StatelessWidget {
       }
     } else if (state == CellState.marked) {
       if (isWrongMarked) {
-        backgroundColor = Colors.grey; // Fondo gris si marcado mal
+        backgroundColor = Colors.black; // Fondo gris si marcado mal
         content = const Text(
           'X',
           style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
