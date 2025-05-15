@@ -71,12 +71,15 @@ class GameScreen extends StatelessWidget {
                       minScale: 0.5,
                       maxScale: 3.0,
                       constrained: false,
-                      child: Transform.scale(
-                        scale: scaleFactor,
-                        alignment: Alignment.topLeft,
-                        child: PicrossGrid(
-                          solution: solution,
-                          gameState: gameState,
+                      child: Transform.translate(
+                        offset: size==5 ? const Offset(-20, 0) : Offset.zero, // Mueve 20px a la izquierda
+                        child: Transform.scale(
+                          scale: scaleFactor,
+                          alignment: Alignment.topLeft,
+                          child: PicrossGrid(
+                            solution: solution,
+                            gameState: gameState,
+                          ),
                         ),
                       ),
                     ),
