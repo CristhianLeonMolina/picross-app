@@ -4,29 +4,50 @@ import '../models/game_state.dart';
 class GridCell extends StatelessWidget {
   final int row;
   final int col;
+  final List<List<int>> solution;
   final GameState gameState;
 
   const GridCell({
     super.key,
     required this.row,
     required this.col,
+    required this.solution,
     required this.gameState,
   });
 
   @override
   Widget build(BuildContext context) {
     final state = gameState.getCellState(row, col);
+    final shouldBeFilled = solution[row][col] == 1;
 
-    Color color;
-    switch (state) {
-      case CellState.filled:
-        color = Colors.black;
-        break;
-      case CellState.marked:
-        color = Colors.red;
-        break;
-      default:
-        color = Colors.white;
+    final isWrongFilled = state == CellState.filled && !shouldBeFilled;
+    final isWrongMarked = state == CellState.marked && shouldBeFilled;
+
+    Color? backgroundColor;
+    Widget? content;
+
+    if (state == CellState.filled) {
+      if (isWrongFilled) {
+        backgroundColor = Colors.black; // Fondo negro si relleno mal
+        content = const Text(
+          'X',
+          style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+        );
+      } else {
+        backgroundColor = Colors.black;
+      }
+    } else if (state == CellState.marked) {
+      if (isWrongMarked) {
+        backgroundColor = Colors.grey; // Fondo gris si marcado mal
+        content = const Text(
+          'X',
+          style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+        );
+      } else {
+        backgroundColor = Colors.grey;
+      }
+    } else {
+      backgroundColor = Colors.white;
     }
 
     return GestureDetector(
@@ -36,11 +57,12 @@ class GridCell extends StatelessWidget {
       child: Container(
         width: 40,
         height: 40,
-        margin: EdgeInsets.all(0),
         decoration: BoxDecoration(
-          color: color,
+          color: backgroundColor,
           border: Border.all(color: Colors.purple),
         ),
+        alignment: Alignment.center,
+        child: content,
       ),
     );
   }
