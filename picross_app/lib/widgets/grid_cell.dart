@@ -28,7 +28,7 @@ class GridCell extends StatelessWidget {
 
     if (state == CellState.filled) {
       if (isWrongFilled) {
-        backgroundColor = Colors.grey; // Fondo negro si relleno mal
+        backgroundColor = Colors.grey;
         content = const Text(
           'X',
           style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
@@ -38,7 +38,7 @@ class GridCell extends StatelessWidget {
       }
     } else if (state == CellState.marked) {
       if (isWrongMarked) {
-        backgroundColor = Colors.purple; // Fondo gris si marcado mal
+        backgroundColor = Colors.purple;
         content = const Text(
           'X',
           style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
@@ -50,6 +50,28 @@ class GridCell extends StatelessWidget {
       backgroundColor = Colors.white;
     }
 
+    final isLastRow = row == solution.length - 1;
+    final isLastCol = col == solution.length - 1;
+
+    final border = Border(
+      top: BorderSide(
+        color: Colors.black,
+        width: row % 5 == 0 ? 2.5 : 0.5,
+      ),
+      left: BorderSide(
+        color: Colors.black,
+        width: col % 5 == 0 ? 2.5 : 0.5,
+      ),
+      right: BorderSide(
+        color: Colors.black,
+        width: (isLastCol) ? 2.5 : 0.5,
+      ),
+      bottom: BorderSide(
+        color: Colors.black,
+        width: (isLastRow) ? 2.5 : 0.5,
+      ),
+    );
+
     return GestureDetector(
       onTap: () {
         gameState.toggleCell(row, col);
@@ -59,7 +81,7 @@ class GridCell extends StatelessWidget {
         height: 40,
         decoration: BoxDecoration(
           color: backgroundColor,
-          border: Border.all(color: Colors.black),
+          border: border,
         ),
         alignment: Alignment.center,
         child: content,

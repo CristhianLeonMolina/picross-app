@@ -36,7 +36,7 @@ class HomeScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
                     onPressed: () => navigateToGame(context, size),
-                    child: Text(' Partida $size x $size '),
+                    child: Text('  Partida $size x $size  '),
                   ),
                 ) : Padding(
                   padding: const EdgeInsets.all(8.0),
