@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/game_state.dart';
 import '../widgets/grid_cell.dart';
 import '../utils/hints.dart';
@@ -36,19 +37,37 @@ class PicrossGrid extends StatelessWidget {
                 height: 40,
                 color: Colors.transparent,
                 child: Padding(
-                  padding: const EdgeInsets.only(bottom: 4.0),
+                  padding: const EdgeInsets.only(bottom: 8.0),
                   child: OverflowBox(
-                    maxHeight: 180,
+                    maxHeight: 160,
                     alignment: Alignment.bottomCenter,
-                    child: Text(
-                      colHints[col - 1].join('\n'),
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 12),
+                    child: Consumer<GameState>(
+                      builder: (context, gameState, _) {
+                        final isCompleted = gameState.completedCols[col - 1];
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: colHints[col - 1].map((num) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 2.0),
+                              child: Text(
+                                '$num',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  decoration:
+                                      isCompleted ? TextDecoration.lineThrough : null,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        );
+                      },
                     ),
                   ),
                 ),
               );
             }
+
 
             // Guía de filas (pueden salir hacia la izquierda)
             if (col == 0 && row > 0) {
@@ -57,15 +76,33 @@ class PicrossGrid extends StatelessWidget {
                 height: 40,
                 color: Colors.transparent,
                 child: Padding(
-                  padding: const EdgeInsets.only(right: 4.0),
+                  padding: const EdgeInsets.only(right: 8.0),
                   child: OverflowBox(
-                    maxWidth: 200,
+                    maxWidth: 180,
                     alignment: Alignment.centerRight,
-                    child: Text(
-                      rowHints[row - 1].join(' '),
-                      textAlign: TextAlign.right,
-                      style: const TextStyle(fontSize: 12),
+                    child: Consumer<GameState>(
+                      builder: (context, gameState, _) {
+                        final isCompleted = gameState.completedRows[row - 1];
+                        return Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: rowHints[row - 1].map((num) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                              child: Text(
+                                '$num',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  decoration:
+                                      isCompleted ? TextDecoration.lineThrough : null,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        );
+                      },
                     ),
+
                   ),
                 ),
               );

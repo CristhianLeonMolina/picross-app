@@ -18,10 +18,9 @@ class GridCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = gameState.getCellState(row, col);
-    final shouldBeFilled = solution[row][col] == 1;
 
-    final isWrongFilled = state == CellState.filled && !shouldBeFilled;
-    final isWrongMarked = state == CellState.marked && shouldBeFilled;
+    final isWrongFilled = gameState.isWrongFilled(row, col, solution);
+    final isWrongMarked = gameState.isWrongMarked(row, col, solution);
 
     Color? backgroundColor;
     Widget? content;

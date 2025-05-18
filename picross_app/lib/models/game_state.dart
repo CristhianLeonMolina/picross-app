@@ -10,6 +10,8 @@ class GameState extends ChangeNotifier {
   final int _size;
   final List<List<int>> _solution;
   late List<List<CellState>> _cellStates;
+  late List<bool> _completedRows = [];
+  late List<bool> _completedCols = [];
 
   InteractionMode _mode = InteractionMode.fill;
 
@@ -25,6 +27,9 @@ class GameState extends ChangeNotifier {
       (_) => List.generate(_size, (_) => CellState.empty),
     );
 
+    _completedRows = List.filled(_size, false);
+    _completedCols = List.filled(_size, false);
+
     _loadBestTime();
     _startTimer();
   }
@@ -36,6 +41,8 @@ class GameState extends ChangeNotifier {
   String? get bestTimeFormatted =>
       _bestTime != null ? _formatTime(_bestTime!) : null;
   InteractionMode get mode => _mode;
+  List<bool> get completedRows => _completedRows;
+  List<bool> get completedCols => _completedCols;
 
   CellState getCellState(int row, int col) => _cellStates[row][col];
 
@@ -50,6 +57,7 @@ class GameState extends ChangeNotifier {
       _cellStates[row][col] = CellState.marked;
     }
 
+    _checkLinesCompletion();
     _checkCompletion();
     notifyListeners();
   }
@@ -152,5 +160,41 @@ class GameState extends ChangeNotifier {
 
     _bestTime = null; // Limpiar el mejor tiempo actual en esta instancia
     notifyListeners();
+  }
+
+  void _checkLinesCompletion() {
+    // Revisa filas
+    for (int row = 0; row < _size; row++) {
+      bool rowCorrect = true;
+      for (int col = 0; col < _size; col++) {
+        if (_cellStates[row][col] == CellState.empty) {
+          rowCorrect = false;
+          break;
+        }
+      }
+      completedRows[row] = rowCorrect;
+    }
+
+    // Revisa columnas
+    for (int col = 0; col < _size; col++) {
+      bool colCorrect = true;
+      for (int row = 0; row < _size; row++) {
+        if (_cellStates[row][col] == CellState.empty) {
+          colCorrect = false;
+          break;
+        }
+      }
+      completedCols[col] = colCorrect;
+    }
+
+    notifyListeners();
+  }
+
+  bool isWrongFilled(int row, int col, List<List<int>> solution) {
+    return _cellStates[row][col] == CellState.filled && solution[row][col] == 0;
+  }
+
+  bool isWrongMarked(int row, int col, List<List<int>> solution) {
+    return _cellStates[row][col] == CellState.marked && solution[row][col] == 1;
   }
 }
