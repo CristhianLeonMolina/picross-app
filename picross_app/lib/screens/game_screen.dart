@@ -10,7 +10,9 @@ class GameScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final gameState = Provider.of<GameState>(context); // ✅ Usamos el Provider aquí
+    final gameState = Provider.of<GameState>(
+      context,
+    ); // ✅ Usamos el Provider aquí
     //final int size = solution.length;
 
     return Scaffold(
@@ -40,8 +42,7 @@ class GameScreen extends StatelessWidget {
                 builder: (context, gameState, _) {
                   return Column(
                     children: [
-                      if(gameState.message != null)
-                      Text(gameState.message!),
+                      if (gameState.message != null) Text(gameState.message!),
                       Text('Tiempo actual: ${gameState.currentTimeFormatted}'),
                       if (gameState.bestTimeFormatted != null)
                         Text('Mejor tiempo: ${gameState.bestTimeFormatted}'),
@@ -61,9 +62,10 @@ class GameScreen extends StatelessWidget {
                           width: 20,
                           height: 20,
                           decoration: BoxDecoration(
-                            color: gameState.mode == InteractionMode.fill
-                                ? Colors.purple
-                                : Colors.grey,
+                            color:
+                                gameState.mode == InteractionMode.fill
+                                    ? Colors.purple
+                                    : Colors.grey,
                             border: Border.all(color: Colors.black),
                           ),
                         ),
@@ -78,15 +80,24 @@ class GameScreen extends StatelessWidget {
               Expanded(
                 child: Center(
                   child: SizedBox(
-                    width: size == 5 ? boardWidth * scaleFactor : (boardWidth * scaleFactor) + 80,
-                    height: size == 5 ? boardWidth * scaleFactor : (boardWidth * scaleFactor) + 80,
+                    width:
+                        size == 5
+                            ? boardWidth * scaleFactor
+                            : (boardWidth * scaleFactor) + 80,
+                    height:
+                        size == 5
+                            ? boardWidth * scaleFactor
+                            : (boardWidth * scaleFactor) + 80,
                     child: InteractiveViewer(
                       boundaryMargin: const EdgeInsets.all(20),
                       minScale: 0.5,
                       maxScale: 3.0,
                       constrained: false,
                       child: Transform.translate(
-                        offset: size==5 ? const Offset(-20, 0) : Offset(20, 40), // Mueve 20px a la izquierda
+                        offset:
+                            size == 5
+                                ? const Offset(-20, 0)
+                                : Offset(20, 40), // Mueve 20px a la izquierda
                         child: Transform.scale(
                           scale: scaleFactor,
                           alignment: Alignment.topLeft,

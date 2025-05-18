@@ -54,22 +54,10 @@ class GridCell extends StatelessWidget {
     final isLastCol = col == solution.length - 1;
 
     final border = Border(
-      top: BorderSide(
-        color: Colors.black,
-        width: row % 5 == 0 ? 2.5 : 0.5,
-      ),
-      left: BorderSide(
-        color: Colors.black,
-        width: col % 5 == 0 ? 2.5 : 0.5,
-      ),
-      right: BorderSide(
-        color: Colors.black,
-        width: (isLastCol) ? 2.5 : 0.5,
-      ),
-      bottom: BorderSide(
-        color: Colors.black,
-        width: (isLastRow) ? 2.5 : 0.5,
-      ),
+      top: BorderSide(color: Colors.black, width: row % 5 == 0 ? 2.5 : 0.5),
+      left: BorderSide(color: Colors.black, width: col % 5 == 0 ? 2.5 : 0.5),
+      right: BorderSide(color: Colors.black, width: (isLastCol) ? 2.5 : 0.5),
+      bottom: BorderSide(color: Colors.black, width: (isLastRow) ? 2.5 : 0.5),
     );
 
     return GestureDetector(
@@ -79,10 +67,7 @@ class GridCell extends StatelessWidget {
       child: Container(
         width: 40,
         height: 40,
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          border: border,
-        ),
+        decoration: BoxDecoration(color: backgroundColor, border: border),
         alignment: Alignment.center,
         child: content,
       ),

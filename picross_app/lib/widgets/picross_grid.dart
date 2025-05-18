@@ -35,7 +35,7 @@ class PicrossGrid extends StatelessWidget {
                 alignment: Alignment.center,
                 height: 40,
                 color: Colors.transparent,
-                child : Padding(
+                child: Padding(
                   padding: const EdgeInsets.only(bottom: 4.0),
                   child: OverflowBox(
                     maxHeight: 180,
@@ -56,7 +56,7 @@ class PicrossGrid extends StatelessWidget {
                 alignment: Alignment.center,
                 height: 40,
                 color: Colors.transparent,
-                child : Padding(
+                child: Padding(
                   padding: const EdgeInsets.only(right: 4.0),
                   child: OverflowBox(
                     maxWidth: 200,
