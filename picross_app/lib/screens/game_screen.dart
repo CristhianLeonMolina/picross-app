@@ -38,6 +38,20 @@ class GameScreen extends StatelessWidget {
               // Botón de modo (sin cambios)
               Consumer<GameState>(
                 builder: (context, gameState, _) {
+                  return Column(
+                    children: [
+                      if(gameState.message != null)
+                      Text(gameState.message!),
+                      Text('Tiempo actual: ${gameState.currentTimeFormatted}'),
+                      if (gameState.bestTimeFormatted != null)
+                        Text('Mejor tiempo: ${gameState.bestTimeFormatted}'),
+                    ],
+                  );
+                },
+              ),
+
+              Consumer<GameState>(
+                builder: (context, gameState, _) {
                   return ElevatedButton(
                     onPressed: () => gameState.toggleMode(),
                     child: Row(

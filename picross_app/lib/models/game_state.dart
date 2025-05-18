@@ -1,36 +1,180 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 enum CellState { empty, filled, marked }
 
 enum InteractionMode { fill, mark }
 
 class GameState extends ChangeNotifier {
-  final List<List<CellState>> _cellStates;
+  final int _size;
+  final List<List<int>> _solution;
+  late List<List<CellState>> _cellStates;
+
   InteractionMode _mode = InteractionMode.fill;
 
-  GameState(int size)
-      : _cellStates = List.generate(
-            size, (_) => List.generate(size, (_) => CellState.empty));
+  Timer? _timer;
+  int _currentTime = 0;
+  int? _bestTime;
+  bool _isCompleted = false;
+  String _message = "";
+
+  GameState(this._size, this._solution) {
+    _cellStates = List.generate(
+      _size,
+      (_) => List.generate(_size, (_) => CellState.empty),
+    );
+
+    _loadBestTime();
+    _startTimer();
+  }
+
+  // Getters públicos
+  int get size => _size;
+  String? get message => _message;
+  String? get currentTimeFormatted => _formatTime(_currentTime);
+  String? get bestTimeFormatted =>
+      _bestTime != null ? _formatTime(_bestTime!) : null;
+  InteractionMode get mode => _mode;
 
   CellState getCellState(int row, int col) => _cellStates[row][col];
 
-  InteractionMode get mode => _mode;
-
   void toggleCell(int row, int col) {
-  // Si la celda ya está marcada o rellenada, no permitir cambios
-  if (_cellStates[row][col] != CellState.empty) return;
+    if (_isCompleted) return; // No cambiar si ya completado
 
-  if (_mode == InteractionMode.fill) {
-    _cellStates[row][col] = CellState.filled;
-  } else {
-    _cellStates[row][col] = CellState.marked;
+    if (_cellStates[row][col] != CellState.empty) return;
+
+    if (_mode == InteractionMode.fill) {
+      _cellStates[row][col] = CellState.filled;
+    } else {
+      _cellStates[row][col] = CellState.marked;
+    }
+
+    _checkCompletion();
+    notifyListeners();
   }
-  notifyListeners();
-}
-
 
   void toggleMode() {
-    _mode = _mode == InteractionMode.fill ? InteractionMode.mark : InteractionMode.fill;
+    _mode =
+        _mode == InteractionMode.fill
+            ? InteractionMode.mark
+            : InteractionMode.fill;
+    notifyListeners();
+  }
+
+  // void _checkCompletion() {
+  //   for (int row = 0; row < _size; row++) {
+  //     for (int col = 0; col < _size; col++) {
+  //       if (_solution[row][col] == 1 &&
+  //           _cellStates[row][col] != CellState.filled) {
+  //         return;
+  //       }
+  //       if (_solution[row][col] == 0 &&
+  //           _cellStates[row][col] == CellState.filled) {
+  //         return;
+  //       }
+  //     }
+  //   }
+
+  //   // Tablero completo
+  //   if (!_isCompleted) {
+  //     _isCompleted = true;
+  //     _timer?.cancel();
+
+  //     if (_bestTime == null || _currentTime < _bestTime!) {
+  //       _bestTime = _currentTime;
+  //       _saveBestTime();
+  //     }
+  //     notifyListeners();
+  //   }
+  // }
+
+  void _checkCompletion() {
+  bool isWin = true;
+
+  for (int row = 0; row < _size; row++) {
+    for (int col = 0; col < _size; col++) {
+      final cellState = _cellStates[row][col];
+      final solutionCell = _solution[row][col];
+
+      if (cellState == CellState.empty) {
+        // Hay una celda sin marcar ni rellenar -> No completado aún
+        return;
+      }
+
+      if (solutionCell == 1 && cellState != CellState.filled) {
+        isWin = false; // debería estar rellenada
+      } else if (solutionCell == 0 && cellState == CellState.filled) {
+        isWin = false; // no debería estar rellenada
+      }
+    }
+  }
+
+  if (!_isCompleted) {
+    _isCompleted = true;
+    _timer?.cancel();
+
+    if (isWin) {
+      if (_bestTime == null || _currentTime < _bestTime!) {
+        _bestTime = _currentTime;
+        _saveBestTime();
+      }
+      _message = "Has ganado";
+    } else {
+      _message = "Has perdido";
+    }
+
+    notifyListeners();
+  }
+}
+
+  void _startTimer() {
+    _timer?.cancel();
+    _currentTime = 0;
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!_isCompleted) {
+        _currentTime++;
+        notifyListeners();
+      } else {
+        _timer?.cancel();
+      }
+    });
+  }
+
+  String _formatTime(int seconds) {
+    final minutes = seconds ~/ 60;
+    final secs = seconds % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}';
+  }
+
+  Future<void> _saveBestTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('bestTime_$_size', _bestTime!);
+  }
+
+  Future<void> _loadBestTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    _bestTime = prefs.getInt('bestTime_$_size');
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  // Metodo para borrar todos los tiempos (debug)
+  Future<void> clearAllBestTimes() async {
+    final prefs = await SharedPreferences.getInstance();
+    // Supongamos que los tamaños usados son 5, 10, 15, 20
+    final sizes = [5, 10, 15, 20];
+
+    for (var s in sizes) {
+      await prefs.remove('bestTime_$s');
+    }
+
+    _bestTime = null; // Limpiar el mejor tiempo actual en esta instancia
     notifyListeners();
   }
 }
