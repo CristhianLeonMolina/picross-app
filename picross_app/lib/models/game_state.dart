@@ -95,7 +95,7 @@ class GameState extends ChangeNotifier {
           hasErrors = true;
         }
         else if (_solution[row][col] == 0 &&
-            _cellStates[row][col] != CellState.marked) {
+            _cellStates[row][col] == CellState.filled) {
           hasErrors = true;
         }
       }
@@ -238,5 +238,18 @@ class GameState extends ChangeNotifier {
     }
   }
 
+  void restartGame() {
+    _cellStates.setAll(
+      0,
+      List.generate(_size, (_) => List.generate(_size, (_) => CellState.empty)),
+    );
+    _currentTime = 0;
+    _isCompleted = false;
+    _message = '';
+    _timer?.cancel();
+    _startTimer();
+    _updateCompletedLines();
+    notifyListeners();
+  }
 
 }

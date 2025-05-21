@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Picross App',
+      title: 'playpicross.com',
       theme: ThemeData(primarySwatch: Colors.purple),
       home: const HomeScreen(), // Aquí llamamos a la pantalla de inicio
     );

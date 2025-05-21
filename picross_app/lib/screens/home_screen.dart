@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'game_screen.dart';
-import '../models/game_state.dart';
 import '../utils/solution.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -16,11 +14,7 @@ class HomeScreen extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder:
-            (context) => ChangeNotifierProvider(
-              create: (_) => GameState(size, solution),
-              child: GameScreen(solution: solution),
-            ),
+        builder: (context) => GameScreen(size: size),
       ),
     );
   }
