@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'game_screen.dart';
-import '../utils/solution.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   void navigateToGame(BuildContext context, int size) {
-    final solution = generateSolution(size);
-
-    print(solution);
-
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => GameScreen(size: size),
-      ),
+      MaterialPageRoute(builder: (context) => GameScreen(size: size)),
     );
   }
 
@@ -38,6 +31,7 @@ class HomeScreen extends StatelessWidget {
             tooltip: 'Borrar mejores tiempos',
             onPressed: () async {
               await clearAllBestTimes();
+              if (!context.mounted) return;
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Todos los mejores tiempos eliminados'),

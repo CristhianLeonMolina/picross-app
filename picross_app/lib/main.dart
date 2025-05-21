@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/home_screen.dart'; // Ajusta el path según tu estructura
+import 'screens/home_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'playpicross.com',
       theme: ThemeData(primarySwatch: Colors.purple),
-      home: const HomeScreen(), // Aquí llamamos a la pantalla de inicio
+      home: const HomeScreen(),
     );
   }
 }

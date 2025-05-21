@@ -72,6 +72,4 @@ class GridCell extends StatelessWidget {
       ),
     );
   }
-
-  
 }

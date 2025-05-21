@@ -25,12 +25,12 @@ class PicrossGrid extends StatelessWidget {
       children: List.generate(size + 1, (row) {
         return TableRow(
           children: List.generate(size + 1, (col) {
-            // Esquina vacía
+            //* Esquina vacía
             if (row == 0 && col == 0) {
               return const SizedBox(width: 40, height: 40);
             }
 
-            // Guía de columnas (pueden salir hacia arriba)
+            //* Guía de columnas
             if (row == 0 && col > 0) {
               return Container(
                 alignment: Alignment.center,
@@ -47,19 +47,24 @@ class PicrossGrid extends StatelessWidget {
                         return Column(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.end,
-                          children: colHints[col - 1].map((num) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 2.0),
-                              child: Text(
-                                '$num',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  decoration:
-                                      isCompleted ? TextDecoration.lineThrough : null,
-                                ),
-                              ),
-                            );
-                          }).toList(),
+                          children:
+                              colHints[col - 1].map((number) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 2.0,
+                                  ),
+                                  child: Text(
+                                    '$number',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      decoration:
+                                          isCompleted
+                                              ? TextDecoration.lineThrough
+                                              : null,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
                         );
                       },
                     ),
@@ -68,8 +73,7 @@ class PicrossGrid extends StatelessWidget {
               );
             }
 
-
-            // Guía de filas (pueden salir hacia la izquierda)
+            //* Guía de filas
             if (col == 0 && row > 0) {
               return Container(
                 alignment: Alignment.center,
@@ -86,19 +90,24 @@ class PicrossGrid extends StatelessWidget {
                         return Row(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.end,
-                          children: rowHints[row - 1].map((num) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                              child: Text(
-                                '$num',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  decoration:
-                                      isCompleted ? TextDecoration.lineThrough : null,
-                                ),
-                              ),
-                            );
-                          }).toList(),
+                          children:
+                              rowHints[row - 1].map((number) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 2.0,
+                                  ),
+                                  child: Text(
+                                    '$number',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      decoration:
+                                          isCompleted
+                                              ? TextDecoration.lineThrough
+                                              : null,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
                         );
                       },
                     ),
@@ -107,7 +116,7 @@ class PicrossGrid extends StatelessWidget {
               );
             }
 
-            // Celda interactiva
+            //* Celdas interactivas
             return GridCell(
               row: row - 1,
               col: col - 1,

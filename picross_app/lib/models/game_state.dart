@@ -22,6 +22,11 @@ class GameState extends ChangeNotifier {
   String _message = "";
 
   GameState(this._size, this._solution) {
+    //TODO: eliminar esta linea cuando se vaya a hacer el release
+    print(
+      _solution,
+    ); //! Esta linea se usa para mostrar la solución en el modo debug
+
     _cellStates = List.generate(
       _size,
       (_) => List.generate(_size, (_) => CellState.empty),
@@ -93,8 +98,7 @@ class GameState extends ChangeNotifier {
         if (_solution[row][col] == 1 &&
             _cellStates[row][col] != CellState.filled) {
           hasErrors = true;
-        }
-        else if (_solution[row][col] == 0 &&
+        } else if (_solution[row][col] == 0 &&
             _cellStates[row][col] == CellState.filled) {
           hasErrors = true;
         }
@@ -223,7 +227,9 @@ class GameState extends ChangeNotifier {
 
   void _updateCompletedLines() {
     for (int row = 0; row < _size; row++) {
-      completedRows[row] = _cellStates[row].every((cell) => cell != CellState.empty);
+      completedRows[row] = _cellStates[row].every(
+        (cell) => cell != CellState.empty,
+      );
     }
 
     for (int col = 0; col < _size; col++) {
@@ -251,5 +257,4 @@ class GameState extends ChangeNotifier {
     _updateCompletedLines();
     notifyListeners();
   }
-
 }

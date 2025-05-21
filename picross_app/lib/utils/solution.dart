@@ -1,6 +1,6 @@
 import 'dart:math';
 
-/// Genera una solución aleatoria de Picross de tamaño [size] x [size].
+//* Genera una solución aleatoria de Picross de tamaño [size] x [size].
 List<List<int>> generateSolution(int size) {
   if (size < 1) {
     size = 1;
