@@ -81,13 +81,13 @@ class GameScreen extends StatelessWidget {
                 child: Center(
                   child: SizedBox(
                     width:
-                        size == 5
+                        /*size == 5
                             ? boardWidth * scaleFactor
-                            : (boardWidth * scaleFactor) + 80,
+                            :*/ (boardWidth * scaleFactor) + 80,
                     height:
-                        size == 5
+                        /*size == 5
                             ? boardWidth * scaleFactor
-                            : (boardWidth * scaleFactor) + 80,
+                            :*/ (boardWidth * scaleFactor) + 80,
                     child: InteractiveViewer(
                       boundaryMargin: const EdgeInsets.all(20),
                       minScale: 0.5,
@@ -96,7 +96,7 @@ class GameScreen extends StatelessWidget {
                       child: Transform.translate(
                         offset:
                             size == 5
-                                ? const Offset(-20, 0)
+                                ? const Offset(20, 20)
                                 : Offset(20, 40), // Mueve 20px a la izquierda
                         child: Transform.scale(
                           scale: scaleFactor,

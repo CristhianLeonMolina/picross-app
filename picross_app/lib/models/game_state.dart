@@ -58,6 +58,7 @@ class GameState extends ChangeNotifier {
     }
 
     _checkLinesCompletion();
+    _updateCompletedLines();
     _checkCompletion();
     notifyListeners();
   }
@@ -93,6 +94,10 @@ class GameState extends ChangeNotifier {
             _cellStates[row][col] != CellState.filled) {
           hasErrors = true;
         }
+        else if (_solution[row][col] == 0 &&
+            _cellStates[row][col] != CellState.marked) {
+          hasErrors = true;
+        }
       }
     }
 
@@ -100,7 +105,7 @@ class GameState extends ChangeNotifier {
     _timer?.cancel();
 
     if (hasErrors) {
-      _message = "¡Has perdido! Hay errores en las casillas rellenadas.";
+      _message = "¡Has perdido! Hay errores en las casillas.";
     } else {
       if (_bestTime == null || _currentTime < _bestTime!) {
         _bestTime = _currentTime;
@@ -197,4 +202,41 @@ class GameState extends ChangeNotifier {
   bool isWrongMarked(int row, int col, List<List<int>> solution) {
     return _cellStates[row][col] == CellState.marked && solution[row][col] == 1;
   }
+
+  bool isColumnFullyFilled(int col) {
+    for (int row = 0; row < _cellStates.length; row++) {
+      if (_cellStates[row][col] == CellState.empty) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool isRowFullyFilled(int row) {
+    for (int col = 0; col < _cellStates[row].length; col++) {
+      if (_cellStates[row][col] == CellState.empty) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  void _updateCompletedLines() {
+    for (int row = 0; row < _size; row++) {
+      completedRows[row] = _cellStates[row].every((cell) => cell != CellState.empty);
+    }
+
+    for (int col = 0; col < _size; col++) {
+      bool isFilled = true;
+      for (int row = 0; row < _size; row++) {
+        if (_cellStates[row][col] == CellState.empty) {
+          isFilled = false;
+          break;
+        }
+      }
+      completedCols[col] = isFilled;
+    }
+  }
+
+
 }

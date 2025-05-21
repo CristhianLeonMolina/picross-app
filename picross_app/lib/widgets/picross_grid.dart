@@ -102,7 +102,6 @@ class PicrossGrid extends StatelessWidget {
                         );
                       },
                     ),
-
                   ),
                 ),
               );
