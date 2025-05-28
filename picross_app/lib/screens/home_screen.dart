@@ -1,9 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'game_screen.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+  XFile? _profileImage;
+
+  Future<void> pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      setState(() {
+        _profileImage = image;
+      });
+      debugPrint('Imagen seleccionada: ${image.path}');
+    }
+  }
 
   void navigateToGame(BuildContext context, int size) {
     Navigator.push(
@@ -23,68 +45,95 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color.fromRGBO(30, 60, 120, 0.9),
-            Color.fromRGBO(50, 90, 160, 0.9),
-            Color.fromRGBO(85, 20, 140, 0.9),
-            Color.fromRGBO(120, 40, 180, 0.9),
-          ],
-        ),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 40.0, bottom: 20.0),
-                child: Column(
-                  children: [
-                    Image.asset(
-                      'assets/icon/picross-logo.png',
-                      width: 80,
-                      height: 80,
-                    ),
-                    const SizedBox(height: 10),
-                  ],
-                ),
-              ),
-              const Text(
-                'Select game',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 40),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildGameSizeButton(context, 5),
-                  const SizedBox(width: 20),
-                  _buildGameSizeButton(context, 10),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildGameSizeButton(context, 15),
-                  const SizedBox(width: 20),
-                  _buildGameSizeButton(context, 20),
-                ],
-              ),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color.fromRGBO(30, 60, 120, 0.9),
+              Color.fromRGBO(50, 90, 160, 0.9),
+              Color.fromRGBO(85, 20, 140, 0.9),
+              Color.fromRGBO(120, 40, 180, 0.9),
             ],
           ),
         ),
-      ),
-    );
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            iconTheme: const IconThemeData(color: Colors.white),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.delete_forever),
+                tooltip: 'Borrar mejores tiempos',
+                onPressed: () async {
+                  await clearAllBestTimes();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Todos los mejores tiempos eliminados'),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 40.0, bottom: 20.0),
+                  child: Column(
+                    children: [
+                      GestureDetector(
+                        onTap: pickImage,
+                        child: CircleAvatar(
+                          radius: 50,
+                          backgroundImage: _profileImage != null
+                              ? FileImage(File(_profileImage!.path))
+                              : const AssetImage('assets/icon/default_profile.png') as ImageProvider,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      const Text(
+                        'Tu perfil',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
+                const Text(
+                  'Select game',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 40),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildGameSizeButton(context, 5),
+                    const SizedBox(width: 20),
+                    _buildGameSizeButton(context, 10),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildGameSizeButton(context, 15),
+                    const SizedBox(width: 20),
+                    _buildGameSizeButton(context, 20),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
   }
 
   Widget _buildGameSizeButton(BuildContext context, int size) {
