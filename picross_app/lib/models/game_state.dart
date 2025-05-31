@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../services/time_service.dart';
+import 'package:http/http.dart' as http;
+
 
 enum CellState { empty, filled, marked }
 
@@ -27,6 +30,8 @@ class GameState extends ChangeNotifier {
       _solution,
     ); //! Esta linea se usa para mostrar la solución en el modo debug
 
+    testApiConnection();
+    
     _cellStates = List.generate(
       _size,
       (_) => List.generate(_size, (_) => CellState.empty),
@@ -76,7 +81,7 @@ class GameState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _checkCompletion() {
+   Future<void> _checkCompletion() async {
     // Verificamos que todas las casillas que deben estar rellenas están rellenas correctamente
     for (int row = 0; row < _size; row++) {
       for (int col = 0; col < _size; col++) {
@@ -134,6 +139,22 @@ class GameState extends ChangeNotifier {
     });
   }
 
+  Future<void> testApiConnection() async {
+  final url = Uri.parse('http://api.playpicross.com');
+
+  try {
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      print('Conexión exitosa. Respuesta: ${response.body}');
+    } else {
+      print('Error en la conexión. Código: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error de conexión: $e');
+  }
+}
+
   String _formatTime(int seconds) {
     final minutes = seconds ~/ 60;
     final secs = seconds % 60;
@@ -141,9 +162,20 @@ class GameState extends ChangeNotifier {
   }
 
   Future<void> _saveBestTime() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('bestTime_$_size', _bestTime!);
+  // guardar localmente
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final currentTime = _currentTime;
+  final key = 'best_time_$size';
+  final bestTime = prefs.getInt(key);
+
+  if (bestTime == null || currentTime < bestTime) {
+    await prefs.setInt(key, currentTime);
   }
+
+  // guardar en API
+  final timeService = TimeService();
+  await timeService.saveTime(size, currentTime);
+}
 
   Future<void> _loadBestTime() async {
     final prefs = await SharedPreferences.getInstance();

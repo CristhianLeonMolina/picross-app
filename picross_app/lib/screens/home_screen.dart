@@ -147,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black,
               spreadRadius: 2,
               blurRadius: 5,
               offset: const Offset(0, 3),
@@ -164,9 +164,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 border: Border.all(color: Colors.grey),
               ),
               child: Column(
-                children: List.generate(size == 5 ? 5 : 4, (rowIndex) => Expanded(
+                children: List.generate(5, (rowIndex) => Expanded(
                   child: Row(
-                    children: List.generate(size == 5 ? 5 : 4, (colIndex) => Expanded(
+                    children: List.generate(5, (colIndex) => Expanded(
                       child: Container(
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey.shade300, width: 0.5),
