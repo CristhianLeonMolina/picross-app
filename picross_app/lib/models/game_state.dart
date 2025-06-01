@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:picross_app/services/api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/time_service.dart';
 import 'package:http/http.dart' as http;
@@ -140,7 +141,7 @@ class GameState extends ChangeNotifier {
   }
 
   Future<void> testApiConnection() async {
-  final url = Uri.parse('http://api.playpicross.com');
+  final url = Uri.parse(ApiConfig.baseUrl);
 
   try {
     final response = await http.get(url);

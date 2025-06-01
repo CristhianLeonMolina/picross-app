@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'account_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../services/user_service.dart';
 import 'game_screen.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'access_screen.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -35,11 +39,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   static Future<void> clearAllBestTimes() async {
+    // final prefs = await SharedPreferences.getInstance();
+    // final sizes = [5, 10, 15, 20];
+    // for (var s in sizes) {
+    //   await prefs.remove('bestTime_$s');
+    // }
+
     final prefs = await SharedPreferences.getInstance();
-    final sizes = [5, 10, 15, 20];
-    for (var s in sizes) {
-      await prefs.remove('bestTime_$s');
-    }
+    await prefs.clear();
   }
 
   @override
@@ -87,7 +94,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     children: [
                       GestureDetector(
-                        onTap: pickImage,
+                        onTap: () async {
+                          final loggedIn = await UserService.isLoggedIn();
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  loggedIn ? const AccountScreen() : const AccessScreen(),
+                            ),
+                          );
+                        },
                         child: CircleAvatar(
                           radius: 50,
                           backgroundImage: _profileImage != null

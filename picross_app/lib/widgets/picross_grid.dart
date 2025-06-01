@@ -57,6 +57,7 @@ class PicrossGrid extends StatelessWidget {
                                     '$number',
                                     style: TextStyle(
                                       fontSize: 12,
+                                      color: Colors.white,
                                       decoration:
                                           isCompleted
                                               ? TextDecoration.lineThrough
@@ -100,6 +101,7 @@ class PicrossGrid extends StatelessWidget {
                                     '$number',
                                     style: TextStyle(
                                       fontSize: 12,
+                                      color: Colors.white,
                                       decoration:
                                           isCompleted
                                               ? TextDecoration.lineThrough
