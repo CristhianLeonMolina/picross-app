@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../services/api_service.dart';
+import '../services/user_service.dart';
 import 'account_screen.dart';
 
 
@@ -18,9 +19,10 @@ class _AccessScreenState extends State<AccessScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final String _baseUrl = ApiConfig.baseUrl;
 
-  void _register() {
+  Future<void> register() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
+    final baseUrl = ApiConfig.baseUrl;
 
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -29,10 +31,65 @@ class _AccessScreenState extends State<AccessScreen> {
       return;
     }
 
-    // Aquí iría la lógica real del registro
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Registro simulado (aún no implementado)')),
+    final url = Uri.parse('$baseUrl/users/register'); // Reemplaza con la URL real
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'email': email,
+        'password': password,
+      }),
     );
+
+    final responseData = jsonDecode(response.body);
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: $responseData');
+
+    if (response.statusCode == 201 && responseData['success'] == true) {
+      final token = responseData['token'];
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', token);
+
+      // 🔁 Ahora: obtener los datos del usuario
+      final detailsResponse = await http.get(
+        Uri.parse('$baseUrl/users/accountDetails'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (detailsResponse.statusCode == 200) {
+        final userData = jsonDecode(detailsResponse.body);
+        if (userData['success'] == true) {
+          final datos = userData['datos'];
+          final username = datos['username'] ?? '';
+          final userId = int.tryParse('${datos['id']}') ?? 0;
+
+
+          // Guardar en SharedPreferences
+          await UserService.initUserSession(
+            token: token,
+            userId: userId,
+            username: username,
+          );
+
+          // Ir a AccountScreen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const AccountScreen()),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error al obtener datos del usuario.')),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No se pudo registrar el usuario.')),
+      );
+    }
   }
 
   Future<void> _login() async {
@@ -179,7 +236,7 @@ class _AccessScreenState extends State<AccessScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: ElevatedButton(
-                      onPressed: _register,
+                      onPressed: register,
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.transparent,

@@ -1,16 +1,17 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:picross_app/services/api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/time_service.dart';
 import 'package:http/http.dart' as http;
 
-
 enum CellState { empty, filled, marked }
 
 enum InteractionMode { fill, mark }
 
 class GameState extends ChangeNotifier {
+  final String baseUrl = ApiConfig.baseUrl;
   final int _size;
   final List<List<int>> _solution;
   late List<List<CellState>> _cellStates;
@@ -24,6 +25,7 @@ class GameState extends ChangeNotifier {
   int? _bestTime;
   bool _isCompleted = false;
   String _message = "";
+  int? _points;
 
   GameState(this._size, this._solution) {
     //TODO: eliminar esta linea cuando se vaya a hacer el release
@@ -32,7 +34,7 @@ class GameState extends ChangeNotifier {
     ); //! Esta linea se usa para mostrar la solución en el modo debug
 
     testApiConnection();
-    
+
     _cellStates = List.generate(
       _size,
       (_) => List.generate(_size, (_) => CellState.empty),
@@ -47,7 +49,8 @@ class GameState extends ChangeNotifier {
 
   // Getters públicos
   int get size => _size;
-  String? get message => _message;
+  int? get points => _points;
+  String? get message => _message;  
   String? get currentTimeFormatted => _formatTime(_currentTime);
   String? get bestTimeFormatted =>
       _bestTime != null ? _formatTime(_bestTime!) : null;
@@ -82,7 +85,7 @@ class GameState extends ChangeNotifier {
     notifyListeners();
   }
 
-   Future<void> _checkCompletion() async {
+  Future<void> _checkCompletion() async {
     // Verificamos que todas las casillas que deben estar rellenas están rellenas correctamente
     for (int row = 0; row < _size; row++) {
       for (int col = 0; col < _size; col++) {
@@ -98,15 +101,15 @@ class GameState extends ChangeNotifier {
     // Aquí todas las casillas que deben estar rellenas están rellenas
 
     // Comprobamos si hay errores en esas casillas (por ejemplo, que alguna esté marcada en vez de rellenada)
-    bool hasErrors = false;
-    for (int row = 0; row < _size && !hasErrors; row++) {
-      for (int col = 0; col < _size && !hasErrors; col++) {
+    int errors = 0;
+    for (int row = 0; row < _size; row++) {
+      for (int col = 0; col < _size; col++) {
         if (_solution[row][col] == 1 &&
             _cellStates[row][col] != CellState.filled) {
-          hasErrors = true;
+          errors ++;
         } else if (_solution[row][col] == 0 &&
             _cellStates[row][col] == CellState.filled) {
-          hasErrors = true;
+          errors ++;
         }
       }
     }
@@ -114,8 +117,8 @@ class GameState extends ChangeNotifier {
     _isCompleted = true;
     _timer?.cancel();
 
-    if (hasErrors) {
-      _message = "¡Has perdido! Hay errores en las casillas.";
+    if (errors > 0) {
+      _message = "¡Has perdido!";
     } else {
       if (_bestTime == null || _currentTime < _bestTime!) {
         _bestTime = _currentTime;
@@ -123,6 +126,24 @@ class GameState extends ChangeNotifier {
       }
       _message = "¡Has ganado!";
     }
+
+    // ✅ Enviar puntuación al servidor
+    final seed = base64Encode(utf8.encode(jsonEncode(_solution))); // Genera un ID simple
+    final completionTime = _currentTime;
+    final errorsCount = errors;
+    final width = _size;
+    final height = _size;
+    final points = _calculatePoints(completionTime, errorsCount, _size);
+    _points = points;
+
+    await _submitScore(
+      seed: seed,
+      completionTime: completionTime,
+      errorsCount: errorsCount,
+      width: width,
+      height: height,
+      points: points,
+    );
 
     notifyListeners();
   }
@@ -141,20 +162,20 @@ class GameState extends ChangeNotifier {
   }
 
   Future<void> testApiConnection() async {
-  final url = Uri.parse(ApiConfig.baseUrl);
+    final url = Uri.parse(baseUrl);
 
-  try {
-    final response = await http.get(url);
+    try {
+      final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      print('Conexión exitosa. Respuesta: ${response.body}');
-    } else {
-      print('Error en la conexión. Código: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        print('Conexión exitosa. Respuesta: ${response.body}');
+      } else {
+        print('Error en la conexión. Código: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error de conexión: $e');
     }
-  } catch (e) {
-    print('Error de conexión: $e');
   }
-}
 
   String _formatTime(int seconds) {
     final minutes = seconds ~/ 60;
@@ -163,24 +184,24 @@ class GameState extends ChangeNotifier {
   }
 
   Future<void> _saveBestTime() async {
-  // guardar localmente
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  final currentTime = _currentTime;
-  final key = 'best_time_$size';
-  final bestTime = prefs.getInt(key);
+    // guardar localmente
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final currentTime = _currentTime;
+    final key = 'best_time_$size'; // <- clave corregida
+    final bestTime = prefs.getInt(key);
 
-  if (bestTime == null || currentTime < bestTime) {
-    await prefs.setInt(key, currentTime);
+    if (bestTime == null || currentTime < bestTime) {
+      await prefs.setInt(key, currentTime);
+    }
+
+    // guardar en API
+    final timeService = TimeService();
+    await timeService.saveTime(size, currentTime);
   }
-
-  // guardar en API
-  final timeService = TimeService();
-  await timeService.saveTime(size, currentTime);
-}
 
   Future<void> _loadBestTime() async {
     final prefs = await SharedPreferences.getInstance();
-    _bestTime = prefs.getInt('bestTime_$_size');
+    _bestTime = prefs.getInt('best_time_$_size'); // <- clave corregida
     notifyListeners();
   }
 
@@ -197,7 +218,7 @@ class GameState extends ChangeNotifier {
     final sizes = [5, 10, 15, 20];
 
     for (var s in sizes) {
-      await prefs.remove('bestTime_$s');
+      await prefs.remove('best_time_$s'); // <- clave corregida
     }
 
     _bestTime = null; // Limpiar el mejor tiempo actual en esta instancia
@@ -275,6 +296,47 @@ class GameState extends ChangeNotifier {
       }
       completedCols[col] = isFilled;
     }
+  }
+
+  Future<void> _submitScore({
+    required String seed,
+    required int completionTime,
+    required int errorsCount,
+    required int width,
+    required int height,
+    required int points,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    if (token == null) return;
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/users/score'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        'seed': seed,
+        'completionTime': completionTime,
+        'errorsCount': errorsCount,
+        'width': width,
+        'height': height,
+        'points': points,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print('Puntuación guardada correctamente');
+    } else {
+      print('Error al enviar puntuación: ${response.body}');
+    }
+  }
+
+  int _calculatePoints(int time, int errors, int size) {
+    int base = size * size * 10;
+    int penalty = errors * 5 + time;
+    return (base - penalty).clamp(0, base);
   }
 
   void restartGame() {

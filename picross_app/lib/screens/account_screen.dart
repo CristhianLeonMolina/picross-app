@@ -150,11 +150,94 @@ class _AccountScreenState extends State<AccountScreen> {
 
 
   void changePass() {
-    // Lógica para cambiar contraseña
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Funcionalidad no implementada')),
+    final oldPasswordController = TextEditingController();
+    final newPasswordController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Cambiar contraseña'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: oldPasswordController,
+              obscureText: true,
+              decoration: const InputDecoration(labelText: 'Contraseña actual'),
+            ),
+            TextField(
+              controller: newPasswordController,
+              obscureText: true,
+              decoration: const InputDecoration(labelText: 'Nueva contraseña'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final oldPass = oldPasswordController.text.trim();
+              final newPass = newPasswordController.text.trim();
+
+              if (oldPass.isEmpty || newPass.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Rellena ambos campos')),
+                );
+                return;
+              }
+
+              final token = await UserService.getToken();
+              final baseUrl = ApiConfig.baseUrl;
+
+              if (token == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('No hay sesión activa')),
+                );
+                return;
+              }
+
+              final response = await http.post(
+                Uri.parse('$baseUrl/users/changePassword'),
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer $token',
+                },
+                body: jsonEncode({
+                  'oldPassword': oldPass,
+                  'password': newPass,
+                }),
+              );
+
+              Navigator.pop(context); // Cierra el diálogo
+
+              if (response.statusCode == 200) {
+                final res = jsonDecode(response.body);
+                if (res['success'] == true) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Contraseña actualizada correctamente')),
+                  );
+                } else {
+                  final msg = res['message'] ?? 'Error al cambiar contraseña';
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error: $msg')),
+                  );
+                }
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Error del servidor o contraseña incorrecta')),
+                );
+              }
+            },
+            child: const Text('Cambiar'),
+          ),
+        ],
+      ),
     );
   }
+
 
   Future<void> logout() async {
     UserService.logout();

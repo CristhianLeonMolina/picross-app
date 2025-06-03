@@ -16,7 +16,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   XFile? _profileImage;
 
   Future<void> pickImage() async {
@@ -39,118 +38,168 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   static Future<void> clearAllBestTimes() async {
-    // final prefs = await SharedPreferences.getInstance();
-    // final sizes = [5, 10, 15, 20];
-    // for (var s in sizes) {
-    //   await prefs.remove('bestTime_$s');
-    // }
-
     final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+    final sizes = [5, 10, 15, 20];
+    for (var s in sizes) {
+      await prefs.remove('bestTime_$s');
+    }
+
+    final prefs2 = await SharedPreferences.getInstance();
+    await prefs2.clear();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color.fromRGBO(30, 60, 120, 0.9),
-              Color.fromRGBO(50, 90, 160, 0.9),
-              Color.fromRGBO(85, 20, 140, 0.9),
-              Color.fromRGBO(120, 40, 180, 0.9),
-            ],
-          ),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color.fromRGBO(30, 60, 120, 0.9),
+            Color.fromRGBO(50, 90, 160, 0.9),
+            Color.fromRGBO(85, 20, 140, 0.9),
+            Color.fromRGBO(120, 40, 180, 0.9),
+          ],
         ),
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            iconTheme: const IconThemeData(color: Colors.white),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.delete_forever),
-                tooltip: 'Borrar mejores tiempos',
-                onPressed: () async {
-                  await clearAllBestTimes();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Todos los mejores tiempos eliminados'),
-                    ),
-                  );
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              const DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 40, 80, 160),
+                ),
+                child: Text(
+                  'Menú',
+                  style: TextStyle(color: Colors.white, fontSize: 24),
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.language),
+                title: const Text('Idioma'),
+                onTap: () {
+                  Navigator.pop(context);
+                  // Navegar a pantalla de idioma
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.help_outline),
+                title: const Text('Instrucciones'),
+                onTap: () {
+                  Navigator.pop(context);
+                  // Navegar a pantalla de instrucciones
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.info_outline),
+                title: const Text('Créditos'),
+                onTap: () {
+                  Navigator.pop(context);
+                  // Navegar a pantalla de créditos
                 },
               ),
             ],
           ),
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 40.0, bottom: 20.0),
-                  child: Column(
-                    children: [
-                      GestureDetector(
-                        onTap: () async {
-                          final loggedIn = await UserService.isLoggedIn();
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  loggedIn ? const AccountScreen() : const AccessScreen(),
-                            ),
-                          );
-                        },
-                        child: CircleAvatar(
-                          radius: 50,
-                          backgroundImage: _profileImage != null
-                              ? FileImage(File(_profileImage!.path))
-                              : const AssetImage('assets/icon/default_profile.png') as ImageProvider,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        'Tu perfil',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ],
+        ),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          iconTheme: const IconThemeData(color: Colors.white),
+          leading: Builder(
+            builder: (BuildContext context) {
+              return IconButton(
+                icon: const Icon(Icons.menu),
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
+              );
+            },
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.delete_forever),
+              tooltip: 'Borrar mejores tiempos',
+              onPressed: () async {
+                await clearAllBestTimes();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Todos los mejores tiempos eliminados'),
                   ),
-                ),
-                const Text(
-                  'Select game',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 40),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildGameSizeButton(context, 5),
-                    const SizedBox(width: 20),
-                    _buildGameSizeButton(context, 10),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildGameSizeButton(context, 15),
-                    const SizedBox(width: 20),
-                    _buildGameSizeButton(context, 20),
-                  ],
-                ),
-              ],
+                );
+              },
             ),
+          ],
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 40.0, bottom: 20.0),
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        final loggedIn = await UserService.isLoggedIn();
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                loggedIn ? const AccountScreen() : const AccessScreen(),
+                          ),
+                        );
+                      },
+                      child: CircleAvatar(
+                        radius: 50,
+                        backgroundImage: _profileImage != null
+                            ? FileImage(File(_profileImage!.path))
+                            : const AssetImage('assets/icon/default_profile.png') as ImageProvider,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Tu perfil',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+              const Text(
+                'Selecciona el nivel',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 40),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildGameSizeButton(context, 5),
+                  const SizedBox(width: 20),
+                  _buildGameSizeButton(context, 10),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildGameSizeButton(context, 15),
+                  const SizedBox(width: 20),
+                  _buildGameSizeButton(context, 20),
+                ],
+              ),
+            ],
           ),
         ),
-      );
+      ),
+    );
   }
 
   Widget _buildGameSizeButton(BuildContext context, int size) {

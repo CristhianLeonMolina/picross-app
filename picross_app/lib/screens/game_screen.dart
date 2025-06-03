@@ -76,78 +76,136 @@ class _GameScreenContent extends StatelessWidget {
               scaleFactor = maxWidth / boardWidth;
             }
 
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+            return Stack(
               children: [
-                //* Botón de modo rellenar o marcar
-                Consumer<GameState>(
-                  builder: (context, gameState, _) {
-                    return Column(
-                      children: [
-                        if (gameState.message != null) Text(gameState.message!),
-                        Text(
-                          'Tiempo actual: ${gameState.currentTimeFormatted}',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        if (gameState.bestTimeFormatted != null)
-                          Text(
-                            'Mejor tiempo: ${gameState.bestTimeFormatted}',
-                            style: TextStyle(color: Colors.white),
-                            ),
-                      ],
-                    );
-                  },
-                ),
-
-                Consumer<GameState>(
-                  builder: (context, gameState, _) {
-                    return ElevatedButton(
-                      onPressed: () => gameState.toggleMode(),
+                //* Contenido principal
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                       child: Row(
-                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Container(
-                            width: 20,
-                            height: 20,
-                            decoration: BoxDecoration(
-                              color:
-                                  gameState.mode == InteractionMode.fill
-                                      ? Colors.purple
-                                      : Colors.grey,
-                              border: Border.all(color: Colors.black),
-                            ),
+                          Text(
+                              'Mejor tiempo: ${gameState.bestTimeFormatted ?? 'No disponible'}',
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                         ],
                       ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 20),
+                    ),
 
-                //* Tablero
-                Expanded(
-                  child: Center(
-                    child: SizedBox(
-                      width: (boardWidth * scaleFactor) + 80,
-                      height: (boardWidth * scaleFactor) + 200,
-                      child: InteractiveViewer(
-                        boundaryMargin: const EdgeInsets.all(20),
-                        minScale: 0.5,
-                        maxScale: 3.0,
-                        constrained: false,
-                        child: Transform.translate(
-                          offset:
-                              size == 5 ? const Offset(20, 30) : Offset(20, 40),
-                          child: Transform.scale(
-                            scale: scaleFactor,
-                            alignment: Alignment.topLeft,
-                            child: PicrossGrid(
-                              solution: solution,
-                              gameState: gameState,
+                    //* Textos dinámicos de estado del juego y tiempos
+                    Consumer<GameState>(
+                      builder: (context, gameState, _) {
+                        return Column(
+                          children: [
+                            const SizedBox(height: 40), // Empuja los textos hacia abajo
+
+                            //* Mensaje de victoria o derrota
+                            Visibility(
+                              visible: gameState.message != null,
+                              maintainSize: true,
+                              maintainAnimation: true,
+                              maintainState: true,
+                              child: Text(
+                                gameState.message ?? '',
+                                style: const TextStyle(color: Colors.white, fontSize: 50),
+                              ),
+                            ),
+
+                            //* Tiempo actual
+                            Text(
+                              'Tiempo actual: ${gameState.currentTimeFormatted}',
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                            ),
+
+                            //* Mejor tiempo
+                            Visibility(
+                              visible: gameState.bestTimeFormatted != null,
+                              maintainSize: true,
+                              maintainAnimation: true,
+                              maintainState: true,
+                              child: Text(
+                                'Puntuación: ${gameState.points ?? 0}',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 60),
+                          ],
+                        );
+                      },
+                    ),
+
+
+                    //* Tablero
+                    Expanded(
+                      child: Center(
+                        child: SizedBox(
+                          width: (boardWidth * scaleFactor) + 80,
+                          height: (boardWidth * scaleFactor) + 200,
+                          child: InteractiveViewer(
+                            boundaryMargin: const EdgeInsets.all(20),
+                            minScale: 0.5,
+                            maxScale: 3.0,
+                            constrained: false,
+                            child: Transform.translate(
+                              offset: size == 5 ? const Offset(20, 30) : const Offset(20, 40),
+                              child: Transform.scale(
+                                scale: scaleFactor,
+                                alignment: Alignment.topLeft,
+                                child: PicrossGrid(
+                                  solution: solution,
+                                  gameState: gameState,
+                                ),
+                              ),
                             ),
                           ),
                         ),
                       ),
+                    ),
+                  ],
+                ),
+
+                //* Botón de modo rellenar o marcar (posición fija)
+                Positioned(
+                  top: 190, // Puedes ajustar esta altura si lo ves necesario
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: Consumer<GameState>(
+                      builder: (context, gameState, _) {
+                        return ElevatedButton(
+                          onPressed: () => gameState.toggleMode(),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 20,
+                                height: 20,
+                                decoration: BoxDecoration(
+                                  color: gameState.mode == InteractionMode.fill
+                                      ? Colors.purple
+                                      : Colors.grey,
+                                  border: Border.all(color: Colors.black),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),
