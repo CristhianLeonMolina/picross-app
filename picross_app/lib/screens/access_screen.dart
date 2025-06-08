@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:picross_app/screens/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../services/api_service.dart';
 import '../services/user_service.dart';
 import 'account_screen.dart';
-
+import 'package:picross_app/l10n/app_localizations.dart'; // Import de localización
 
 class AccessScreen extends StatefulWidget {
   const AccessScreen({super.key});
@@ -20,43 +21,34 @@ class _AccessScreenState extends State<AccessScreen> {
   final String _baseUrl = ApiConfig.baseUrl;
 
   Future<void> register() async {
+    final loc = AppLocalizations.of(context)!;
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
-    final baseUrl = ApiConfig.baseUrl;
 
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Por favor, completa todos los campos.')),
+        SnackBar(content: Text(loc.error_fill_fields)),
       );
       return;
     }
 
-    final url = Uri.parse('$baseUrl/users/register'); // Reemplaza con la URL real
+    final url = Uri.parse('$_baseUrl/users/register');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'email': email,
-        'password': password,
-      }),
+      body: jsonEncode({'email': email, 'password': password}),
     );
 
     final responseData = jsonDecode(response.body);
-
-    print('Response status: ${response.statusCode}');
-    print('Response body: $responseData');
 
     if (response.statusCode == 201 && responseData['success'] == true) {
       final token = responseData['token'];
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', token);
 
-      // 🔁 Ahora: obtener los datos del usuario
       final detailsResponse = await http.get(
-        Uri.parse('$baseUrl/users/accountDetails'),
-        headers: {
-          'Authorization': 'Bearer $token',
-        },
+        Uri.parse('$_baseUrl/users/accountDetails'),
+        headers: {'Authorization': 'Bearer $token'},
       );
 
       if (detailsResponse.statusCode == 200) {
@@ -66,103 +58,93 @@ class _AccessScreenState extends State<AccessScreen> {
           final username = datos['username'] ?? '';
           final userId = int.tryParse('${datos['id']}') ?? 0;
 
-
-          // Guardar en SharedPreferences
           await UserService.initUserSession(
             token: token,
             userId: userId,
             username: username,
           );
 
-          // Ir a AccountScreen
           Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => const AccountScreen()),
           );
+          return;
         }
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Error al obtener datos del usuario.')),
-        );
       }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(loc.error_user_data)),
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No se pudo registrar el usuario.')),
+        SnackBar(content: Text(loc.error_register)),
       );
     }
   }
 
   Future<void> _login() async {
+    final loc = AppLocalizations.of(context)!;
     final response = await http.post(
       Uri.parse('$_baseUrl/users/login'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'email': _emailController.text, 'password': _passwordController.text}),
+      body: jsonEncode({
+        'email': _emailController.text.trim(),
+        'password': _passwordController.text.trim(),
+      }),
     );
-
-    print('Response body: ${response.body}');
 
     if (response.statusCode == 201) {
       final data = jsonDecode(response.body);
       final token = data['token'];
       if (token == null) {
-        // Manejar error
+        // Manejar error token nulo
         return;
       }
-      // Guardar token en SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', token);
 
-      // Hacer petición para obtener datos de usuario
       final userResponse = await http.get(
         Uri.parse('$_baseUrl/users/accountDetails'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
+        headers: {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'},
       );
-
-      print('Status: ${response.statusCode}');
-      print('Headers: ${response.headers}');
-      print('Body: ${response.body}');
 
       if (userResponse.statusCode == 200) {
         final userData = jsonDecode(userResponse.body);
         if (userData['success'] == true) {
           final datos = userData['datos'];
-          final userId = datos['id'] ?? '';  // Si no está el id, omite o ajusta
+          final userId = '${datos['id'] ?? ''}';
           final username = datos['username'] ?? '';
-          // Guardar username y userId si quieres
+
           await prefs.setString('username', username);
           await prefs.setString('userId', userId);
-          // Navegar a la siguiente pantalla
 
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Inicio de sesión exitoso')),
+            SnackBar(content: Text(loc.login_success)),
           );
 
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AccountScreen()),
-          );       
-
-          // Redirigir a otra pantalla si quieres
-          // Navigator.pushReplacementNamed(context, '/home');
+            MaterialPageRoute(builder: (_) => const AccountScreen()),
+          );
+          return;
         }
-      } 
-    }else if (response.statusCode == 401) {
+      }
+    } else if (response.statusCode == 401) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Credenciales incorrectas')),
+        SnackBar(content: Text(loc.login_wrong_credentials)),
       );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error del servidor: ${response.statusCode}')),
-      );
+      return;
     }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('${loc.server_error}: ${response.statusCode}')),
+    );
   }
-  
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -176,19 +158,20 @@ class _AccessScreenState extends State<AccessScreen> {
           ],
         ),
       ),
-      child: Scaffold( 
+      child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
-          title: const Text(
-            'Cuenta',
-            style: TextStyle(color: Colors.white),
+          title: Text(
+            loc.account_title, // 'Cuenta'
+            style: const TextStyle(color: Colors.white),
           ),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () {
-              Navigator.pop(context); //* Esto vuelve a la pantalla anterior
-            },
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const HomeScreen()),
+            ),
           ),
         ),
         body: Padding(
@@ -199,22 +182,22 @@ class _AccessScreenState extends State<AccessScreen> {
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  labelText: 'Introduce tu correo electrónico',
+                decoration: InputDecoration(
+                  labelText: loc.email, // 'Introduce tu correo electrónico'
                   filled: true,
                   fillColor: Colors.white,
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 20),
               TextField(
                 controller: _passwordController,
                 obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'Introduce tu contraseña',
+                decoration: InputDecoration(
+                  labelText: loc.password, // 'Introduce tu contraseña'
                   filled: true,
                   fillColor: Colors.white,
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 30),
@@ -246,7 +229,7 @@ class _AccessScreenState extends State<AccessScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text('  Regístrate  '),
+                      child: Text(loc.register_button), // 'Regístrate'
                     ),
                   ),
                   Container(
@@ -264,7 +247,7 @@ class _AccessScreenState extends State<AccessScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: ElevatedButton(
-                        onPressed: _login,
+                      onPressed: _login,
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.transparent,
@@ -274,7 +257,7 @@ class _AccessScreenState extends State<AccessScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                        child: const Text('Iniciar sesión'),
+                      child: Text(loc.login_button), // 'Iniciar sesión'
                     ),
                   ),
                 ],

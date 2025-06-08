@@ -1,7 +1,7 @@
 name: picross_app
 description: "A new Flutter project."
 
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: 'none'
 
 version: 1.0.0+1
 
@@ -13,27 +13,36 @@ dependencies:
     sdk: flutter
   provider: ^6.1.1
   cupertino_icons: ^1.0.8
-  http: 1.4.0
+  http: ^1.4.0
   shared_preferences: ^2.2.2
   image_picker: ^1.0.4
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.14.3
+  build_runner: any
+  intl_utils: ^2.8.5
 
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/icon/picross-logo.png"
+  image_path: "assets/icons/picross-logo.png"
 
 flutter:
-
   uses-material-design: true
-
+  generate: true
   assets:
-    - assets/icon/picross-logo.png
-    - assets/icon/default_profile.png
+    - assets/icons/picross-logo.png
+    - assets/icons/default_profile.png
+    - assets/icons/es.png
+    - assets/icons/en.png
 
+flutter_intl:
+  enabled: true
+  arb_dir: lib/l10n
+  output_dir: lib/generated

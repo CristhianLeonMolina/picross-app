@@ -1,0 +1,127 @@
+{
+  "@@locale": "en",
+  "title": "Picross",
+
+  "account_title": "Account",
+  "error_fill_fields": "Please fill in all fields.",
+  "error_user_data": "Failed to retrieve user data.",
+  "error_register": "User registration failed.",
+  "login_success": "Login successful",
+  "login_wrong_credentials": "Incorrect credentials",
+  "server_error": "Server error: {code}",
+  "email_hint": "Enter your email address",
+  "password_hint": "Enter your password",
+  "register_button": "Register",
+  "login_button": "Login",
+
+  "edit": "Edit",
+  "save": "Save",
+  "change_photo": "Change photo",
+  "username": "Username",
+  "email": "Email",
+  "password": "Password",
+  "logout": "Log out",
+  "edit_success": "Changes saved successfully",
+  "edit_error": "Failed to save changes",
+  "logout_confirm": "Do you want to log out?",
+
+  "no_session": "No session started.",
+  "update_success": "Details updated successfully.",
+  "update_error": "Error: {message}",
+  "@update_error": {
+    "description": "Error message when updating user details",
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "change_password": "Change password",
+  "current_password": "Current password",
+  "new_password": "New password",
+  "cancel": "Cancel",
+  "change": "Change",
+  "fill_both_fields": "Please fill both fields",
+  "no_active_session": "No active session",
+  "password_updated": "Password updated successfully",
+  "password_change_error": "Error: {message}",
+  "@password_change_error": {
+    "description": "Error message when changing password",
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "password_change_fail": "Server error or incorrect password",
+  "logout_success": "Session closed",
+
+  "your_profile": "Your profile",
+
+  "credits_title": "Credits",
+  "credits_body": "Here the application credits will be shown.",
+
+  "restart_game_tooltip": "Restart game",
+  "best_time": "Best time",
+  "current_time": "Current time",
+  "score_points": "Score",
+  "toggle_mode_button": "Toggle mode",
+  "not_available": "Not available",
+
+  "home_menu": "Menu",
+  "home_language": "Language",
+  "home_instructions": "Instructions",
+  "home_credits": "Credits",
+  "home_delete_best_times_tooltip": "Delete best times",
+  "home_delete_best_times_message": "All best times deleted",
+  "home_profile": "Your profile",
+  "home_select_level": "Select level",
+
+  "instructions_title": "Instructions",
+  
+  "whats_nonogram_title": "What Are Nonograms? A Complete Beginner's Guide",
+  "whats_nonogram_body": "A nonogram is a type of logic puzzle that consists of a rectangular grid of squares, with numerical clues aligned along the rows and columns. The goal is to determine which squares should be filled to eventually uncover a hidden pixel-style image. The puzzle challenges players to use logic and deduction rather than guesswork to complete it successfully.\n\nThe numbers provided are not random—they represent sequences of filled squares. For example, a clue of '5 2' in a row means there will be a group of five filled cells, followed by at least one blank cell, and then a group of two filled cells. However, the placement of these blocks is not initially clear, which is where your reasoning skills come into play.\n\nThis type of picture logic puzzle requires no prior math skills, just patience and logical thinking. With each square you fill (or exclude), you get closer to completing a hidden illustration—one of the most rewarding parts of solving nonograms.",
+
+  "how_to_play_title": "How to Play Nonograms: Step-by-Step",
+  "how_to_play_body": "Learning how to play a nonogram puzzle can seem tricky at first, but once you understand the system behind it, you'll be hooked. The basic principle is to use the clues to determine which squares to fill in. There's no guessing—just methodical analysis and deduction.\n\nStart by identifying rows or columns where the clues take up the full width. For example, in a 10x10 grid, a row with a clue '10' clearly means all 10 cells are filled. Rows like '9' or '8' will also have very limited positions where the blocks can go, making them a great starting point. Use this logic to mark what you're sure of.\n\nAs you work through the puzzle, use the gray squares to mark empty squares. This visual aid helps eliminate possibilities and focus your attention. As more clues align, you'll unlock new sections. The beauty of the nonogram puzzle is in the slow unveiling of the image—like solving a mystery one square at a time.",
+
+  "basic_rules_title": "Nonogram Puzzle Rules for Beginners",
+  "basic_rules_body": "The golden rule in any nonogram is: never guess. Every move should be based on logic. If the clue says '3 2', you cannot assume where the 3 and the 2 go without testing all possible placements and cross-checking with intersecting clues. A single mistake can throw off your entire puzzle.\n\nAlways work on both axes—rows and columns—simultaneously. This cross-referencing is key to advancing through difficult puzzles. The challenge scales with larger grids and more complex clue patterns, but the satisfaction also grows with each completed puzzle.",
+
+  "advices_title": "Logic Puzzle Tips to Improve Your Strategy",
+  "advices_body": "If you're stuck, revisit previously marked rows and columns. New information often helps solve older sections. Use 'edge logic', focusing on rows or columns with clues that are long enough to touch both edges of the grid. This tactic is especially useful in mid-size puzzles.\n\nDon't hesitate to lightly test possibilities using pencil marks or digital tools—just avoid finalizing moves until you're sure. As you practice, you'll naturally develop intuition for patterns and improve your speed and accuracy.",
+
+  "language_title": "Language",
+
+  "game_lost": "You lost!",
+  "game_won": "You won!",
+
+  "score_saved_success": "Score saved successfully",
+  "score_save_error": "Error sending score: {errorBody}",
+  "@score_save_error": {
+    "description": "Message when there is an error sending the score to the server",
+    "placeholders": {
+      "errorBody": {}
+    }
+  },
+
+  "connection_success": "Connection successful. Response: {responseBody}",
+  "@connection_success": {
+    "description": "Message when connection to the API is successful",
+    "placeholders": {
+      "responseBody": {}
+    }
+  },
+
+  "connection_error_code": "Connection error. Code: {statusCode}",
+  "@connection_error_code": {
+    "description": "Message when the API connection fails with HTTP code",
+    "placeholders": {
+      "statusCode": {}
+    }
+  },
+
+  "connection_error": "Connection error: {error}",
+  "@connection_error": {
+    "description": "Message when there is a general connection error",
+    "placeholders": {
+      "error": {}
+    }
+  }
+}

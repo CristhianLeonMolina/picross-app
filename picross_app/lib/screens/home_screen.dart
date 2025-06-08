@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:picross_app/providers/locale_provider.dart';
+import 'package:provider/provider.dart';
 import 'account_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/user_service.dart';
@@ -6,7 +8,9 @@ import 'game_screen.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'access_screen.dart';
-
+import 'instructions_screen.dart';
+import 'credits_screen.dart';
+import 'package:picross_app/l10n/app_localizations.dart'; // Import para localización
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -50,6 +54,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -69,37 +75,49 @@ class _HomeScreenState extends State<HomeScreen> {
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
-              const DrawerHeader(
-                decoration: BoxDecoration(
+              DrawerHeader(
+                decoration: const BoxDecoration(
                   color: Color.fromARGB(255, 40, 80, 160),
                 ),
                 child: Text(
-                  'Menú',
-                  style: TextStyle(color: Colors.white, fontSize: 24),
+                  loc.home_menu,
+                  style: const TextStyle(color: Colors.white, fontSize: 24),
                 ),
               ),
               ListTile(
                 leading: const Icon(Icons.language),
-                title: const Text('Idioma'),
+                title: Text(loc.language_title),
+                trailing: Image.asset(
+                  Localizations.localeOf(context).languageCode == 'es'
+                      ? 'assets/icons/es.png'
+                      : 'assets/icons/en.png',
+                  width: 32,
+                  height: 32,
+                ),
                 onTap: () {
+                  final currentLocale = Localizations.localeOf(context);
+                  final newLocale = currentLocale.languageCode == 'es'
+                      ? const Locale('en')
+                      : const Locale('es');
+
+                  context.read<LocaleProvider>().setLocale(newLocale);
                   Navigator.pop(context);
-                  // Navegar a pantalla de idioma
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.help_outline),
-                title: const Text('Instrucciones'),
+                title: Text(loc.instructions_title),
                 onTap: () {
                   Navigator.pop(context);
-                  // Navegar a pantalla de instrucciones
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const InstructionsScreen()));
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.info_outline),
-                title: const Text('Créditos'),
+                title: Text(loc.credits_title),
                 onTap: () {
                   Navigator.pop(context);
-                  // Navegar a pantalla de créditos
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const CreditsScreen()));
                 },
               ),
             ],
@@ -122,12 +140,12 @@ class _HomeScreenState extends State<HomeScreen> {
           actions: [
             IconButton(
               icon: const Icon(Icons.delete_forever),
-              tooltip: 'Borrar mejores tiempos',
+              tooltip: loc.home_delete_best_times_tooltip,
               onPressed: () async {
                 await clearAllBestTimes();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Todos los mejores tiempos eliminados'),
+                  SnackBar(
+                    content: Text(loc.home_delete_best_times_message),
                   ),
                 );
               },
@@ -145,7 +163,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     GestureDetector(
                       onTap: () async {
                         final loggedIn = await UserService.isLoggedIn();
-
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -158,20 +175,20 @@ class _HomeScreenState extends State<HomeScreen> {
                         radius: 50,
                         backgroundImage: _profileImage != null
                             ? FileImage(File(_profileImage!.path))
-                            : const AssetImage('assets/icon/default_profile.png') as ImageProvider,
+                            : const AssetImage('assets/icons/default_profile.png') as ImageProvider,
                       ),
                     ),
                     const SizedBox(height: 10),
-                    const Text(
-                      'Tu perfil',
-                      style: TextStyle(color: Colors.white),
+                    Text(
+                      loc.your_profile,
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ],
                 ),
               ),
-              const Text(
-                'Selecciona el nivel',
-                style: TextStyle(
+              Text(
+                loc.home_select_level,
+                style: const TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/game_state.dart';
 import '../utils/solution.dart';
 import '../widgets/picross_grid.dart';
+import 'package:picross_app/l10n/app_localizations.dart'; // Import de localización
 
 class GameScreen extends StatelessWidget {
   final int size;
@@ -14,7 +15,7 @@ class GameScreen extends StatelessWidget {
     final solution = generateSolution(size);
 
     return ChangeNotifierProvider(
-      create: (_) => GameState(size, solution),
+      create: (_) => GameState(size, solution, context),
       child: _GameScreenContent(solution: solution),
     );
   }
@@ -28,6 +29,8 @@ class _GameScreenContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final gameState = Provider.of<GameState>(context);
+    final loc = AppLocalizations.of(context)!;
+
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -45,15 +48,15 @@ class _GameScreenContent extends StatelessWidget {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
-          title: const Text(
-            'Picross',
-            style: TextStyle(color: Colors.white),
+          title: Text(
+            loc.title,
+            style: const TextStyle(color: Colors.white),
           ),
           iconTheme: const IconThemeData(color: Colors.white),
-            actions: [
+          actions: [
             IconButton(
               icon: const Icon(Icons.refresh),
-              tooltip: 'Reiniciar partida',
+              tooltip: loc.restart_game_tooltip,
               onPressed: () {
                 final size = gameState.size;
                 Navigator.pushReplacement(
@@ -66,7 +69,6 @@ class _GameScreenContent extends StatelessWidget {
         ),
         body: LayoutBuilder(
           builder: (context, constraints) {
-            //* Calcula la escala para que el tablero quepa en la pantalla
             final int size = solution.length;
             final double maxWidth = constraints.maxWidth - 40;
             final double boardWidth = (size + 1) * 40.0;
@@ -78,7 +80,6 @@ class _GameScreenContent extends StatelessWidget {
 
             return Stack(
               children: [
-                //* Contenido principal
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -88,25 +89,21 @@ class _GameScreenContent extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Text(
-                              'Mejor tiempo: ${gameState.bestTimeFormatted ?? 'No disponible'}',
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                            '${loc.best_time}: ${gameState.bestTimeFormatted ?? loc.not_available}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
                     ),
-
-                    //* Textos dinámicos de estado del juego y tiempos
                     Consumer<GameState>(
                       builder: (context, gameState, _) {
                         return Column(
                           children: [
-                            const SizedBox(height: 40), // Empuja los textos hacia abajo
-
-                            //* Mensaje de victoria o derrota
+                            const SizedBox(height: 40),
                             Visibility(
                               visible: gameState.message != null,
                               maintainSize: true,
@@ -117,25 +114,21 @@ class _GameScreenContent extends StatelessWidget {
                                 style: const TextStyle(color: Colors.white, fontSize: 50),
                               ),
                             ),
-
-                            //* Tiempo actual
                             Text(
-                              'Tiempo actual: ${gameState.currentTimeFormatted}',
+                              '${loc.current_time}: ${gameState.currentTimeFormatted}',
                               style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-
-                            //* Mejor tiempo
                             Visibility(
                               visible: gameState.bestTimeFormatted != null,
                               maintainSize: true,
                               maintainAnimation: true,
                               maintainState: true,
                               child: Text(
-                                'Puntuación: ${gameState.points ?? 0}',
+                                '${loc.score_points}: ${gameState.points ?? 0}',
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
@@ -148,9 +141,6 @@ class _GameScreenContent extends StatelessWidget {
                         );
                       },
                     ),
-
-
-                    //* Tablero
                     Expanded(
                       child: Center(
                         child: SizedBox(
@@ -178,10 +168,8 @@ class _GameScreenContent extends StatelessWidget {
                     ),
                   ],
                 ),
-
-                //* Botón de modo rellenar o marcar (posición fija)
                 Positioned(
-                  top: 190, // Puedes ajustar esta altura si lo ves necesario
+                  top: 200,
                   left: 0,
                   right: 0,
                   child: Center(
@@ -192,6 +180,8 @@ class _GameScreenContent extends StatelessWidget {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
+                              Text(loc.toggle_mode_button),
+                              const SizedBox(width: 8),
                               Container(
                                 width: 20,
                                 height: 20,

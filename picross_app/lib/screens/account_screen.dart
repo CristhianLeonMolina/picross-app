@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:picross_app/screens/home_screen.dart';
 import 'package:picross_app/services/api_service.dart';
 import '../services/user_service.dart';
 import 'access_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:picross_app/l10n/app_localizations.dart';  // Importa localizaciones
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -76,9 +78,11 @@ class _AccountScreenState extends State<AccountScreen> {
     final token = await UserService.getToken();
     final baseUrl = ApiConfig.baseUrl;
 
+    final loc = AppLocalizations.of(context)!;
+
     if (token == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No hay sesión iniciada.')),
+        SnackBar(content: Text(loc.no_session)),  // Traducción
       );
       return;
     }
@@ -135,12 +139,12 @@ class _AccountScreenState extends State<AccountScreen> {
             );
 
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Datos actualizados correctamente.')),
+              SnackBar(content: Text(loc.edit_success)),  // Traducción
             );
           } else {
-            final msg = resBody['message'] ?? 'Error al guardar los datos';
+            final msg = resBody['message'] ?? loc.edit_error;  // Traducción
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Error: $msg')),
+              SnackBar(content: Text('${loc.update_error}: $msg')),
             );
           }
         }
@@ -148,34 +152,35 @@ class _AccountScreenState extends State<AccountScreen> {
     }
   }
 
-
   void changePass() {
     final oldPasswordController = TextEditingController();
     final newPasswordController = TextEditingController();
 
+    final loc = AppLocalizations.of(context)!;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Cambiar contraseña'),
+        title: Text(loc.change_password),  // Traducción
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: oldPasswordController,
               obscureText: true,
-              decoration: const InputDecoration(labelText: 'Contraseña actual'),
+              decoration: InputDecoration(labelText: loc.current_password), // Traducción
             ),
             TextField(
               controller: newPasswordController,
               obscureText: true,
-              decoration: const InputDecoration(labelText: 'Nueva contraseña'),
+              decoration: InputDecoration(labelText: loc.new_password),  // Traducción
             ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancelar'),
+            child: Text(loc.cancel),  // Traducción
           ),
           ElevatedButton(
             onPressed: () async {
@@ -184,7 +189,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
               if (oldPass.isEmpty || newPass.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Rellena ambos campos')),
+                  SnackBar(content: Text(loc.fill_both_fields)),  // Traducción
                 );
                 return;
               }
@@ -194,7 +199,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
               if (token == null) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('No hay sesión activa')),
+                  SnackBar(content: Text(loc.no_active_session)),  // Traducción
                 );
                 return;
               }
@@ -217,43 +222,44 @@ class _AccountScreenState extends State<AccountScreen> {
                 final res = jsonDecode(response.body);
                 if (res['success'] == true) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Contraseña actualizada correctamente')),
+                    SnackBar(content: Text(loc.password_updated)),  // Traducción
                   );
                 } else {
-                  final msg = res['message'] ?? 'Error al cambiar contraseña';
+                  final msg = res['message'] ?? loc.password_change_error;  // Traducción
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error: $msg')),
+                    SnackBar(content: Text('${loc.update_error}: $msg')),
                   );
                 }
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Error del servidor o contraseña incorrecta')),
+                  SnackBar(content: Text(loc.password_change_fail)),  // Traducción
                 );
               }
             },
-            child: const Text('Cambiar'),
+            child: Text(loc.change),  // Traducción
           ),
         ],
       ),
     );
   }
 
-
   Future<void> logout() async {
     UserService.logout();
 
     ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Sesión cerrada')),
+      SnackBar(content: Text(AppLocalizations.of(context)!.logout_success)),  // Traducción
     );
 
     Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => AccessScreen()),
+      context,
+      MaterialPageRoute(builder: (context) => const AccessScreen()),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -271,14 +277,17 @@ class _AccountScreenState extends State<AccountScreen> {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
-          title: const Text(
-            'Cuenta',
-            style: TextStyle(color: Colors.white),
+          title: Text(
+            loc.account_title,  // Traducción
+            style: const TextStyle(color: Colors.white),
           ),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () {
-              Navigator.pop(context); //* Esto vuelve a la pantalla anterior
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const HomeScreen()),
+              );
             },
           ),
         ),
@@ -296,34 +305,34 @@ class _AccountScreenState extends State<AccountScreen> {
                         radius: 50,
                         backgroundImage: _profileImage != null
                             ? FileImage(File(_profileImage!.path))
-                            : const AssetImage('assets/icon/default_profile.png') as ImageProvider,
+                            : const AssetImage('assets/icons/default_profile.png') as ImageProvider,
                       ),
                     ),
                     const SizedBox(height: 10),
-                    const Text(
-                      'Tu perfil',
-                      style: TextStyle(color: Colors.white),
+                    Text(
+                      loc.your_profile,  // Traducción
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ],
                 ),
               ),
               TextField(
                 controller: _usernameController,
-                decoration: const InputDecoration(
-                  labelText: 'Nombre de usuario',
+                decoration: InputDecoration(
+                  labelText: loc.username,  // Traducción
                   filled: true,
                   fillColor: Colors.white,
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 20),
               TextField(
                 controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Correo electrónico',
+                decoration: InputDecoration(
+                  labelText: loc.email,  // Traducción
                   filled: true,
                   fillColor: Colors.white,
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 30),
@@ -352,7 +361,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text('Guardar'),
+                  child: Text(loc.save),  // Traducción
                 ),
               ),
               const SizedBox(height: 10),
@@ -381,7 +390,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text('Cambiar contraseña'),
+                  child: Text(loc.change_password),  // Traducción
                 ),
               ),
               const SizedBox(height: 10),
@@ -410,10 +419,10 @@ class _AccountScreenState extends State<AccountScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text('Cerrar sesión'),
+                  child: Text(loc.logout),  // Traducción
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
             ],
           ),
         ),

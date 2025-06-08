@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart'; // para BuildContext
 import 'package:picross_app/services/api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/time_service.dart';
 import 'package:http/http.dart' as http;
+// Importa el archivo generado de localización (ajusta el import según tu proyecto)
+import 'package:picross_app/l10n/app_localizations.dart';
 
 enum CellState { empty, filled, marked }
-
 enum InteractionMode { fill, mark }
 
 class GameState extends ChangeNotifier {
@@ -27,11 +28,11 @@ class GameState extends ChangeNotifier {
   String _message = "";
   int? _points;
 
-  GameState(this._size, this._solution) {
+  final BuildContext context; // Necesario para obtener localizaciones
+
+  GameState(this._size, this._solution, this.context) {
     //TODO: eliminar esta linea cuando se vaya a hacer el release
-    print(
-      _solution,
-    ); //! Esta linea se usa para mostrar la solución en el modo debug
+    print(_solution); //! Esta linea se usa para mostrar la solución en el modo debug
 
     testApiConnection();
 
@@ -47,10 +48,33 @@ class GameState extends ChangeNotifier {
     _startTimer();
   }
 
+  // Helper para obtener texto localizado
+  String getLocalizedString(String key, [Map<String, String>? params]) {
+    final localizations = AppLocalizations.of(context)!;
+    switch (key) {
+      case 'game_lost':
+        return localizations.game_lost;
+      case 'game_won':
+        return localizations.game_won;
+      case 'score_saved_success':
+        return localizations.score_saved_success;
+      case 'score_save_error':
+        return localizations.score_save_error(params?['errorBody'] ?? '');
+      case 'connection_success':
+        return localizations.connection_success(params?['responseBody'] ?? '');
+      case 'connection_error_code':
+        return localizations.connection_error_code(params?['statusCode'] ?? '');
+      case 'connection_error':
+        return localizations.connection_error(params?['error'] ?? '');
+      default:
+        return key; // fallback
+    }
+  }
+
   // Getters públicos
   int get size => _size;
   int? get points => _points;
-  String? get message => _message;  
+  String? get message => _message;
   String? get currentTimeFormatted => _formatTime(_currentTime);
   String? get bestTimeFormatted =>
       _bestTime != null ? _formatTime(_bestTime!) : null;
@@ -79,9 +103,7 @@ class GameState extends ChangeNotifier {
 
   void toggleMode() {
     _mode =
-        _mode == InteractionMode.fill
-            ? InteractionMode.mark
-            : InteractionMode.fill;
+        _mode == InteractionMode.fill ? InteractionMode.mark : InteractionMode.fill;
     notifyListeners();
   }
 
@@ -106,10 +128,10 @@ class GameState extends ChangeNotifier {
       for (int col = 0; col < _size; col++) {
         if (_solution[row][col] == 1 &&
             _cellStates[row][col] != CellState.filled) {
-          errors ++;
+          errors++;
         } else if (_solution[row][col] == 0 &&
             _cellStates[row][col] == CellState.filled) {
-          errors ++;
+          errors++;
         }
       }
     }
@@ -118,13 +140,13 @@ class GameState extends ChangeNotifier {
     _timer?.cancel();
 
     if (errors > 0) {
-      _message = "¡Has perdido!";
+      _message = getLocalizedString('game_lost'); // "¡Has perdido!"
     } else {
       if (_bestTime == null || _currentTime < _bestTime!) {
         _bestTime = _currentTime;
         _saveBestTime();
       }
-      _message = "¡Has ganado!";
+      _message = getLocalizedString('game_won'); // "¡Has ganado!"
     }
 
     // ✅ Enviar puntuación al servidor
@@ -168,12 +190,12 @@ class GameState extends ChangeNotifier {
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
-        print('Conexión exitosa. Respuesta: ${response.body}');
+        print(getLocalizedString('connection_success', {'responseBody': response.body}));
       } else {
-        print('Error en la conexión. Código: ${response.statusCode}');
+        print(getLocalizedString('connection_error_code', {'statusCode': response.statusCode.toString()}));
       }
     } catch (e) {
-      print('Error de conexión: $e');
+      print(getLocalizedString('connection_error', {'error': e.toString()}));
     }
   }
 

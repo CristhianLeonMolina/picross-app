@@ -1,0 +1,127 @@
+{
+  "@@locale": "es",
+  "title": "Picross",
+
+  "account_title": "Cuenta",
+  "error_fill_fields": "Por favor, completa todos los campos.",
+  "error_user_data": "Error al obtener datos del usuario.",
+  "error_register": "No se pudo registrar el usuario.",
+  "login_success": "Inicio de sesión exitoso",
+  "login_wrong_credentials": "Credenciales incorrectas",
+  "server_error": "Error del servidor",
+  "email_hint": "Introduce tu correo electrónico",
+  "password_hint": "Introduce tu contraseña",
+  "register_button": "Regístrate",
+  "login_button": "Iniciar sesión",
+
+  "edit": "Editar",
+  "save": "Guardar",
+  "change_photo": "Cambiar foto",
+  "username": "Nombre de usuario",
+  "email": "Correo electrónico",
+  "password": "Contraseña",
+  "logout": "Cerrar sesión",
+  "edit_success": "Cambios guardados con éxito",
+  "edit_error": "No se pudieron guardar los cambios",
+  "logout_confirm": "¿Deseas cerrar sesión?",
+  
+  "no_session": "No hay sesión iniciada.",
+  "update_success": "Datos actualizados correctamente.",
+  "update_error": "Error: {message}",
+  "@update_error": {
+    "description": "Mensaje de error al actualizar los datos del usuario",
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "change_password": "Cambiar contraseña",
+  "current_password": "Contraseña actual",
+  "new_password": "Nueva contraseña",
+  "cancel": "Cancelar",
+  "change": "Cambiar",
+  "fill_both_fields": "Rellena ambos campos",
+  "no_active_session": "No hay sesión activa",
+  "password_updated": "Contraseña actualizada correctamente",
+  "password_change_error": "Error: {message}",
+  "@password_change_error": {
+    "description": "Mensaje de error al cambiar contraseña",
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "password_change_fail": "Error del servidor o contraseña incorrecta",
+  "logout_success": "Sesión cerrada",
+
+  "your_profile": "Tu perfil",
+
+  "credits_title": "Créditos",
+  "credits_body": "Aquí se mostrarán los créditos de la aplicación.",
+
+  "restart_game_tooltip": "Reiniciar partida",
+  "best_time": "Mejor tiempo",
+  "current_time": "Tiempo actual",
+  "score_points": "Puntuación",
+  "toggle_mode_button": "Cambiar modo",
+  "not_available": "No disponible",
+
+  "home_menu": "Menú",
+  "home_language": "Idioma",
+  "home_instructions": "Instrucciones",
+  "home_credits": "Créditos",
+  "home_delete_best_times_tooltip": "Borrar mejores tiempos",
+  "home_delete_best_times_message": "Todos los mejores tiempos eliminados",
+  "home_profile": "Tu perfil",
+  "home_select_level": "Selecciona el nivel",
+
+  "instructions_title": "Instrucciones",
+
+  "whats_nonogram_title": "¿Qué son los Nonogramas? Una Guía Completa para Principiantes",
+  "whats_nonogram_body": "Un nonograma es un tipo de puzzle lógico que consiste en una cuadrícula rectangular de casillas, con pistas numéricas alineadas a lo largo de las filas y columnas. El objetivo es determinar qué casillas deben rellenarse para eventualmente descubrir una imagen oculta en estilo pixel. El puzzle desafía a los jugadores a usar la lógica y la deducción en lugar de la adivinación para completarlo con éxito.\n\nLos números proporcionados no son aleatorios: representan secuencias de casillas rellenas. Por ejemplo, una pista de '5 2' en una fila significa que habrá un grupo de cinco casillas rellenas, seguido de al menos una casilla vacía, y luego un grupo de dos casillas rellenas. Sin embargo, la ubicación de estos bloques no está clara inicialmente, que es donde entran en juego tus habilidades de razonamiento.\n\nEste tipo de puzzle lógico de imágenes no requiere habilidades matemáticas previas, solo paciencia y pensamiento lógico. Con cada casilla que rellenas (o excluyes), te acercas a completar una ilustración oculta, una de las partes más gratificantes de resolver nonogramas.",
+
+  "how_to_play_title": "Cómo Jugar Nonogramas: Paso a Paso",
+  "how_to_play_body": "Aprender a jugar un puzzle nonograma puede parecer complicado al principio, pero una vez que entiendas el sistema detrás de él, te enganchará. El principio básico es usar las pistas para determinar qué casillas rellenar. No hay adivinación, solo análisis metódico y deducción.\n\nComienza identificando filas o columnas donde las pistas ocupan todo el ancho. Por ejemplo, en una cuadrícula de 10x10, una fila con la pista '10' claramente significa que todas las 10 casillas están rellenas. Filas como '9' o '8' también tendrán posiciones muy limitadas donde pueden ir los bloques, lo que las convierte en un gran punto de partida. Usa esta lógica para marcar lo que estás seguro.\n\nMientras trabajas en el puzzle, usa los bloques grises para marcar casillas vacías. Esta ayuda visual ayuda a eliminar posibilidades y enfocar tu atención. A medida que más pistas se alinean, desbloquearás nuevas secciones. La belleza del puzzle nonograma está en la lenta revelación de la imagen, como resolver un misterio una casilla a la vez.",
+
+  "basic_rules_title": "Reglas de los Puzzles Nonograma para Principiantes",
+  "basic_rules_body": "La regla de oro en cualquier nonograma es: nunca adivines. Cada movimiento debe basarse en la lógica. Si la pista dice '3 2', no puedes asumir dónde van el 3 y el 2 sin probar todas las ubicaciones posibles y verificar con las pistas que se cruzan. Un solo error puede arruinar todo tu puzzle.\n\nSiempre trabaja en ambos ejes (filas y columnas) simultáneamente. Esta verificación cruzada es clave para avanzar a través de puzzles difíciles. El desafío escala con cuadrículas más grandes y patrones de pistas más complejos, pero la satisfacción también crece con cada puzzle completado.",
+
+  "advices_title": "Consejos de Puzzles Lógicos para Mejorar tu Estrategia",
+  "advices_body": "Si estás atascado, revisa filas y columnas previamente marcadas. La nueva información a menudo ayuda a resolver secciones anteriores. Usa la 'lógica de bordes', enfocándote en filas o columnas con pistas que son lo suficientemente largas como para tocar ambos bordes de la cuadrícula. Esta táctica es especialmente útil en puzzles de tamaño medio.\n\nNo dudes en probar ligeramente posibilidades usando marcas de lápiz o herramientas digitales, solo evita finalizar movimientos hasta que estés seguro. A medida que practiques, desarrollarás naturalmente intuición para patrones y mejorarás tu velocidad y precisión.",
+
+  "language_title": "Idioma",
+
+  "game_lost": "¡Has perdido!",
+  "game_won": "¡Has ganado!",
+
+  "score_saved_success": "Puntuación guardada correctamente",
+  "score_save_error": "Error al enviar puntuación: {errorBody}",
+  "@score_save_error": {
+    "description": "Mensaje cuando hay un error al guardar la puntuación en el servidor",
+    "placeholders": {
+      "errorBody": {}
+    }
+  },
+
+  "connection_success": "Conexión exitosa. Respuesta: {responseBody}",
+  "@connection_success": {
+    "description": "Mensaje cuando la conexión a la API es exitosa",
+    "placeholders": {
+      "responseBody": {}
+    }
+  },
+
+  "connection_error_code": "Error en la conexión. Código: {statusCode}",
+  "@connection_error_code": {
+    "description": "Mensaje cuando la conexión a la API falla con código HTTP",
+    "placeholders": {
+      "statusCode": {}
+    }
+  },
+
+  "connection_error": "Error de conexión: {error}",
+  "@connection_error": {
+    "description": "Mensaje cuando hay un error general de conexión",
+    "placeholders": {
+      "error": {}
+    }
+  }
+}
