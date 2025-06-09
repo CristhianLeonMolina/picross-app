@@ -1,9 +1,11 @@
+import 'package:picross_app/models/game_state.dart';
+import 'package:picross_app/utils/solution.dart';
+import 'package:picross_app/widgets/picross_grid.dart';
+import 'package:picross_app/l10n/app_localizations.dart';
+
 import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
-import '../models/game_state.dart';
-import '../utils/solution.dart';
-import '../widgets/picross_grid.dart';
-import 'package:picross_app/l10n/app_localizations.dart'; // Import de localización
 
 class GameScreen extends StatelessWidget {
   final int size;
@@ -48,10 +50,7 @@ class _GameScreenContent extends StatelessWidget {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
-          title: Text(
-            loc.title,
-            style: const TextStyle(color: Colors.white),
-          ),
+          title: Text(loc.title, style: const TextStyle(color: Colors.white)),
           iconTheme: const IconThemeData(color: Colors.white),
           actions: [
             IconButton(
@@ -84,7 +83,10 @@ class _GameScreenContent extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 8.0,
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -111,7 +113,10 @@ class _GameScreenContent extends StatelessWidget {
                               maintainState: true,
                               child: Text(
                                 gameState.message ?? '',
-                                style: const TextStyle(color: Colors.white, fontSize: 50),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 50,
+                                ),
                               ),
                             ),
                             Text(
@@ -152,7 +157,10 @@ class _GameScreenContent extends StatelessWidget {
                             maxScale: 3.0,
                             constrained: false,
                             child: Transform.translate(
-                              offset: size == 5 ? const Offset(20, 30) : const Offset(20, 40),
+                              offset:
+                                  size == 5
+                                      ? const Offset(20, 30)
+                                      : const Offset(20, 40),
                               child: Transform.scale(
                                 scale: scaleFactor,
                                 alignment: Alignment.topLeft,
@@ -186,9 +194,10 @@ class _GameScreenContent extends StatelessWidget {
                                 width: 20,
                                 height: 20,
                                 decoration: BoxDecoration(
-                                  color: gameState.mode == InteractionMode.fill
-                                      ? Colors.purple
-                                      : Colors.grey,
+                                  color:
+                                      gameState.mode == InteractionMode.fill
+                                          ? Colors.purple
+                                          : Colors.grey,
                                   border: Border.all(color: Colors.black),
                                 ),
                               ),

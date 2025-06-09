@@ -1,14 +1,19 @@
+import 'package:picross_app/screens/home_screen.dart';
+import 'package:picross_app/screens/access_screen.dart';
+import 'package:picross_app/services/api_service.dart';
+import 'package:picross_app/services/user_service.dart';
+import 'package:picross_app/l10n/app_localizations.dart';
+
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
+
 import 'package:http/http.dart' as http;
+
 import 'package:image_picker/image_picker.dart';
-import 'package:picross_app/screens/home_screen.dart';
-import 'package:picross_app/services/api_service.dart';
-import '../services/user_service.dart';
-import 'access_screen.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:picross_app/l10n/app_localizations.dart';  // Importa localizaciones
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -30,13 +35,13 @@ class _AccountScreenState extends State<AccountScreen> {
 
   Future<void> _loadUserData() async {
     final token = await UserService.getToken();
-    if (token == null) return; // no token, no hacemos nada
+    if (token == null) return;
 
     final String baseUrl = ApiConfig.baseUrl;
     final loc = AppLocalizations.of(context)!;
 
     final response = await http.get(
-      Uri.parse('$baseUrl/users/accountDetails'), // cambia a tu URL real
+      Uri.parse('$baseUrl/users/accountDetails'),
       headers: {'Authorization': 'Bearer $token'},
     );
 
@@ -49,18 +54,18 @@ class _AccountScreenState extends State<AccountScreen> {
           _emailController.text = datos['email'] ?? '';
         });
       }
-    } else if (response.statusCode == 400){
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(loc.token_bearer_required)),  // Traducción
-      );
-    } else if (response.statusCode == 401){
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(loc.token_invalid_or_exired)),  // Traducción
-      );
-    } else if (response.statusCode == 404){
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(loc.user_not_found)),  // Traducción
-      );
+    } else if (response.statusCode == 400) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(loc.token_bearer_required)));
+    } else if (response.statusCode == 401) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(loc.token_invalid_or_exired)));
+    } else if (response.statusCode == 404) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(loc.user_not_found)));
     }
   }
 
@@ -92,23 +97,20 @@ class _AccountScreenState extends State<AccountScreen> {
     final loc = AppLocalizations.of(context)!;
 
     if (token == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(loc.no_session)),  // Traducción
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(loc.no_session)));
       return;
     }
 
     final url = Uri.parse('$baseUrl/users/changeDetails');
     final response = await http.post(
-      url, 
+      url,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode({
-        'name': username,
-        'email': email,
-      }),
+      body: jsonEncode({'name': username, 'email': email}),
     );
 
     final resBody = jsonDecode(response.body);
@@ -116,7 +118,6 @@ class _AccountScreenState extends State<AccountScreen> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', token);
 
-    // Hacer petición para obtener datos de usuario
     final userResponse = await http.get(
       Uri.parse('$baseUrl/users/accountDetails'),
       headers: {
@@ -125,18 +126,19 @@ class _AccountScreenState extends State<AccountScreen> {
       },
     );
 
-    print('Status: ${response.statusCode}');
-    print('Headers: ${response.headers}');
-    print('Body: ${response.body}');
+    //!----------DEBUG----------
+    debugPrint('Status: ${response.statusCode}');
+    debugPrint('Headers: ${response.headers}');
+    debugPrint('Body: ${response.body}');
+    //!-------------------------
 
     if (userResponse.statusCode == 200) {
       final userData = jsonDecode(userResponse.body);
       if (userData['success'] == true) {
         final datos = userData['datos'];
 
-        // Extraer y validar los datos
         final username = datos['username'] ?? '';
-        final userId = datos['id']; // Suponiendo que es un int
+        final userId = datos['id'];
 
         if (userId is int) {
           final prefs = await SharedPreferences.getInstance();
@@ -150,11 +152,11 @@ class _AccountScreenState extends State<AccountScreen> {
               username: username,
             );
 
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(loc.edit_success)),  // Traducción
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(loc.edit_success)));
           } else {
-            final msg = resBody['message'] ?? loc.edit_error;  // Traducción
+            final msg = resBody['message'] ?? loc.edit_error;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('${loc.update_error}: $msg')),
             );
@@ -172,87 +174,88 @@ class _AccountScreenState extends State<AccountScreen> {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(loc.change_password),  // Traducción
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: oldPasswordController,
-              obscureText: true,
-              decoration: InputDecoration(labelText: loc.current_password), // Traducción
+      builder:
+          (context) => AlertDialog(
+            title: Text(loc.change_password),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: oldPasswordController,
+                  obscureText: true,
+                  decoration: InputDecoration(labelText: loc.current_password),
+                ),
+                TextField(
+                  controller: newPasswordController,
+                  obscureText: true,
+                  decoration: InputDecoration(labelText: loc.new_password),
+                ),
+              ],
             ),
-            TextField(
-              controller: newPasswordController,
-              obscureText: true,
-              decoration: InputDecoration(labelText: loc.new_password),  // Traducción
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(loc.cancel),  // Traducción
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              final oldPass = oldPasswordController.text.trim();
-              final newPass = newPasswordController.text.trim();
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(loc.cancel),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  final oldPass = oldPasswordController.text.trim();
+                  final newPass = newPasswordController.text.trim();
 
-              if (oldPass.isEmpty || newPass.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(loc.fill_both_fields)),  // Traducción
-                );
-                return;
-              }
+                  if (oldPass.isEmpty || newPass.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(loc.fill_both_fields)),
+                    );
+                    return;
+                  }
 
-              final token = await UserService.getToken();
-              final baseUrl = ApiConfig.baseUrl;
+                  final token = await UserService.getToken();
+                  final baseUrl = ApiConfig.baseUrl;
 
-              if (token == null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(loc.no_active_session)),  // Traducción
-                );
-                return;
-              }
-              
-              final url = Uri.parse('$baseUrl/users/changePassword');
-              final response = await http.post(
-                url,
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': 'Bearer $token',
+                  if (token == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(loc.no_active_session)),
+                    );
+                    return;
+                  }
+
+                  final url = Uri.parse('$baseUrl/users/changePassword');
+                  final response = await http.post(
+                    url,
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': 'Bearer $token',
+                    },
+                    body: jsonEncode({
+                      'oldPassword': oldPass,
+                      'password': newPass,
+                    }),
+                  );
+
+                  Navigator.pop(context);
+
+                  if (response.statusCode == 200) {
+                    final res = jsonDecode(response.body);
+                    if (res['success'] == true) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(loc.password_updated)),
+                      );
+                    } else {
+                      final msg = res['message'] ?? loc.password_change_error;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('${loc.update_error}: $msg')),
+                      );
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(loc.password_change_fail)),
+                    );
+                  }
                 },
-                body: jsonEncode({
-                  'oldPassword': oldPass,
-                  'password': newPass,
-                }),
-              );
-
-              Navigator.pop(context); // Cierra el diálogo
-
-              if (response.statusCode == 200) {
-                final res = jsonDecode(response.body);
-                if (res['success'] == true) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(loc.password_updated)),  // Traducción
-                  );
-                } else {
-                  final msg = res['message'] ?? loc.password_change_error;  // Traducción
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('${loc.update_error}: $msg')),
-                  );
-                }
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(loc.password_change_fail)),  // Traducción
-                );
-              }
-            },
-            child: Text(loc.change),  // Traducción
+                child: Text(loc.change),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -260,7 +263,7 @@ class _AccountScreenState extends State<AccountScreen> {
     UserService.logout();
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(AppLocalizations.of(context)!.logout_success)),  // Traducción
+      SnackBar(content: Text(AppLocalizations.of(context)!.logout_success)),
     );
 
     Navigator.push(
@@ -291,7 +294,7 @@ class _AccountScreenState extends State<AccountScreen> {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           title: Text(
-            loc.account_title,  // Traducción
+            loc.account_title,
             style: const TextStyle(color: Colors.white),
           ),
           leading: IconButton(
@@ -316,14 +319,18 @@ class _AccountScreenState extends State<AccountScreen> {
                       onTap: pickImage,
                       child: CircleAvatar(
                         radius: 50,
-                        backgroundImage: _profileImage != null
-                            ? FileImage(File(_profileImage!.path))
-                            : const AssetImage('assets/icons/default_profile.png') as ImageProvider,
+                        backgroundImage:
+                            _profileImage != null
+                                ? FileImage(File(_profileImage!.path))
+                                : const AssetImage(
+                                      'assets/icons/default_profile.png',
+                                    )
+                                    as ImageProvider,
                       ),
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      loc.your_profile,  // Traducción
+                      loc.your_profile,
                       style: const TextStyle(color: Colors.white),
                     ),
                   ],
@@ -332,7 +339,7 @@ class _AccountScreenState extends State<AccountScreen> {
               TextField(
                 controller: _usernameController,
                 decoration: InputDecoration(
-                  labelText: loc.username,  // Traducción
+                  labelText: loc.username,
                   filled: true,
                   fillColor: Colors.white,
                   border: const OutlineInputBorder(),
@@ -342,7 +349,7 @@ class _AccountScreenState extends State<AccountScreen> {
               TextField(
                 controller: _emailController,
                 decoration: InputDecoration(
-                  labelText: loc.email,  // Traducción
+                  labelText: loc.email,
                   filled: true,
                   fillColor: Colors.white,
                   border: const OutlineInputBorder(),
@@ -369,12 +376,15 @@ class _AccountScreenState extends State<AccountScreen> {
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.transparent,
                     shadowColor: Colors.transparent,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: Text(loc.save),  // Traducción
+                  child: Text(loc.save),
                 ),
               ),
               const SizedBox(height: 10),
@@ -398,12 +408,15 @@ class _AccountScreenState extends State<AccountScreen> {
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.transparent,
                     shadowColor: Colors.transparent,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: Text(loc.change_password),  // Traducción
+                  child: Text(loc.change_password),
                 ),
               ),
               const SizedBox(height: 10),
@@ -427,12 +440,15 @@ class _AccountScreenState extends State<AccountScreen> {
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.transparent,
                     shadowColor: Colors.transparent,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: Text(loc.logout),  // Traducción
+                  child: Text(loc.logout),
                 ),
               ),
               const SizedBox(height: 20),

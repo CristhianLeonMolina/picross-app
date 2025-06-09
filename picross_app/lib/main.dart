@@ -1,9 +1,11 @@
+import 'package:picross_app/l10n/app_localizations.dart';
+import 'package:picross_app/providers/locale_provider.dart';
+import 'package:picross_app/screens/home_screen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+
 import 'package:provider/provider.dart';
-import 'l10n/app_localizations.dart'; // Asegúrate de que esta ruta sea correcta
-import 'providers/locale_provider.dart';
-import 'screens/home_screen.dart';
 
 void main() {
   runApp(

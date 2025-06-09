@@ -1,16 +1,20 @@
-import 'package:flutter/material.dart';
+import 'package:picross_app/screens/access_screen.dart';
+import 'package:picross_app/screens/instructions_screen.dart';
+import 'package:picross_app/screens/account_screen.dart';
+import 'package:picross_app/screens/game_screen.dart';
+import 'package:picross_app/services/user_service.dart';
 import 'package:picross_app/providers/locale_provider.dart';
+import 'package:picross_app/l10n/app_localizations.dart';
+
+import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
-import 'account_screen.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
-import '../services/user_service.dart';
-import 'game_screen.dart';
+
 import 'dart:io';
+
 import 'package:image_picker/image_picker.dart';
-import 'access_screen.dart';
-import 'instructions_screen.dart';
-import 'credits_screen.dart';
-import 'package:picross_app/l10n/app_localizations.dart'; // Import para localización
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,6 +24,26 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  //!----------------------------------------------------------
+  //!-------------------------DEBUG----------------------------
+  //!----------------------------------------------------------
+
+  //* Metodo para borrar los tiempos y la cuenta guardada
+  static Future<void> clearAllBestTimes() async {
+    final prefs = await SharedPreferences.getInstance();
+    final sizes = [5, 10, 15, 20];
+    for (var s in sizes) {
+      await prefs.remove('bestTime_$s');
+    }
+
+    final prefs2 = await SharedPreferences.getInstance();
+    await prefs2.clear();
+  }
+
+  //!----------------------------------------------------------
+  //!----------------------------------------------------------
+  //!----------------------------------------------------------
+
   XFile? _profileImage;
 
   Future<void> pickImage() async {
@@ -39,17 +63,6 @@ class _HomeScreenState extends State<HomeScreen> {
       context,
       MaterialPageRoute(builder: (context) => GameScreen(size: size)),
     );
-  }
-
-  static Future<void> clearAllBestTimes() async {
-    final prefs = await SharedPreferences.getInstance();
-    final sizes = [5, 10, 15, 20];
-    for (var s in sizes) {
-      await prefs.remove('bestTime_$s');
-    }
-
-    final prefs2 = await SharedPreferences.getInstance();
-    await prefs2.clear();
   }
 
   @override
@@ -84,7 +97,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       child: Text(
                         loc.home_menu,
-                        style: const TextStyle(color: Colors.white, fontSize: 24),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                        ),
                       ),
                     ),
                     ListTile(
@@ -99,9 +115,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       onTap: () {
                         final currentLocale = Localizations.localeOf(context);
-                        final newLocale = currentLocale.languageCode == 'es'
-                            ? const Locale('en')
-                            : const Locale('es');
+                        final newLocale =
+                            currentLocale.languageCode == 'es'
+                                ? const Locale('en')
+                                : const Locale('es');
 
                         context.read<LocaleProvider>().setLocale(newLocale);
                         Navigator.pop(context);
@@ -112,14 +129,22 @@ class _HomeScreenState extends State<HomeScreen> {
                       title: Text(loc.instructions_title),
                       onTap: () {
                         Navigator.pop(context);
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => const InstructionsScreen()));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const InstructionsScreen(),
+                          ),
+                        );
                       },
                     ),
                   ],
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 24.0,
+                  horizontal: 16.0,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -135,10 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 8),
                     Text(
                       loc.credits_body,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                      ),
+                      style: const TextStyle(fontSize: 14, color: Colors.grey),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -161,6 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
+          //! Botón para borrar los tiempos y la cuenta guardada (DEBUG)
           actions: [
             IconButton(
               icon: const Icon(Icons.delete_forever),
@@ -168,13 +191,12 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () async {
                 await clearAllBestTimes();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(loc.home_delete_best_times_message),
-                  ),
+                  SnackBar(content: Text(loc.home_delete_best_times_message)),
                 );
               },
             ),
           ],
+          //!-----------------------------------------------------------
         ),
         body: Center(
           child: Column(
@@ -190,16 +212,23 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                loggedIn ? const AccountScreen() : const AccessScreen(),
+                            builder:
+                                (context) =>
+                                    loggedIn
+                                        ? const AccountScreen()
+                                        : const AccessScreen(),
                           ),
                         );
                       },
                       child: CircleAvatar(
                         radius: 50,
-                        backgroundImage: _profileImage != null
-                            ? FileImage(File(_profileImage!.path))
-                            : const AssetImage('assets/icons/default_profile.png') as ImageProvider,
+                        backgroundImage:
+                            _profileImage != null
+                                ? FileImage(File(_profileImage!.path))
+                                : const AssetImage(
+                                      'assets/icons/default_profile.png',
+                                    )
+                                    as ImageProvider,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -267,21 +296,28 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               width: 80,
               height: 80,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-              ),
+              decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
               child: Column(
-                children: List.generate(5, (rowIndex) => Expanded(
-                  child: Row(
-                    children: List.generate(5, (colIndex) => Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade300, width: 0.5),
+                children: List.generate(
+                  5,
+                  (rowIndex) => Expanded(
+                    child: Row(
+                      children: List.generate(
+                        5,
+                        (colIndex) => Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.grey.shade300,
+                                width: 0.5,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                    )),
+                    ),
                   ),
-                )),
+                ),
               ),
             ),
             const SizedBox(height: 10),

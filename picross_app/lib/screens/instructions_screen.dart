@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:picross_app/l10n/app_localizations.dart';
 import 'package:picross_app/screens/home_screen.dart';
+
+import 'package:flutter/material.dart';
 
 class InstructionsScreen extends StatelessWidget {
   const InstructionsScreen({super.key});
@@ -9,17 +10,14 @@ class InstructionsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
 
-    final whiteHeadline = Theme.of(context)
-      .textTheme
-      .headlineMedium
-      ?.copyWith(
-        color: Colors.white,
-        fontWeight: FontWeight.bold);
+    final whiteHeadline = Theme.of(context).textTheme.headlineMedium?.copyWith(
+      color: Colors.white,
+      fontWeight: FontWeight.bold,
+    );
 
-    final whiteBody = Theme.of(context)
-      .textTheme
-      .bodyLarge
-      ?.copyWith(color: Colors.white);
+    final whiteBody = Theme.of(
+      context,
+    ).textTheme.bodyLarge?.copyWith(color: Colors.white);
 
     return Container(
       decoration: const BoxDecoration(
@@ -35,7 +33,7 @@ class InstructionsScreen extends StatelessWidget {
         ),
       ),
       child: Scaffold(
-      backgroundColor: Colors.transparent,
+        backgroundColor: Colors.transparent,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           title: Text(
@@ -44,10 +42,11 @@ class InstructionsScreen extends StatelessWidget {
           ),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const HomeScreen()),
-            ),
+            onPressed:
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const HomeScreen()),
+                ),
           ),
         ),
         body: SingleChildScrollView(

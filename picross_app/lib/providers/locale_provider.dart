@@ -12,10 +12,6 @@ class LocaleProvider with ChangeNotifier {
   }
 }
 
-/// Opcional: clase de idiomas disponibles
 class L10n {
-  static final all = [
-    const Locale('en'),
-    const Locale('es'),
-  ];
+  static final all = [const Locale('en'), const Locale('es')];
 }

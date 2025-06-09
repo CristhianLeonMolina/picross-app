@@ -1,5 +1,6 @@
+import 'package:picross_app/models/game_state.dart';
+
 import 'package:flutter/material.dart';
-import '../models/game_state.dart';
 
 class GridCell extends StatelessWidget {
   final int row;

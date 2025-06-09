@@ -1,3 +1,3 @@
 class ApiConfig {
-  static const String baseUrl = 'https://api.playpicross.com'; // Cambia si despliegas
+  static const String baseUrl = 'https://api.playpicross.com';
 }

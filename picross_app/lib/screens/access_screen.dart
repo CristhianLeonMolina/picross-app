@@ -1,12 +1,16 @@
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:picross_app/services/api_service.dart';
+import 'package:picross_app/services/user_service.dart';
+import 'package:picross_app/screens/account_screen.dart';
 import 'package:picross_app/screens/home_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:picross_app/l10n/app_localizations.dart';
+
 import 'dart:convert';
-import '../services/api_service.dart';
-import '../services/user_service.dart';
-import 'account_screen.dart';
-import 'package:picross_app/l10n/app_localizations.dart'; // Import de localización
+
+import 'package:flutter/material.dart';
+
+import 'package:http/http.dart' as http;
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AccessScreen extends StatefulWidget {
   const AccessScreen({super.key});
@@ -26,9 +30,9 @@ class _AccessScreenState extends State<AccessScreen> {
     final password = _passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(loc.error_fill_fields)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(loc.error_fill_fields)));
       return;
     }
 
@@ -72,17 +76,17 @@ class _AccessScreenState extends State<AccessScreen> {
         }
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(loc.error_user_data)),
-      );
-    } else if (response.statusCode == 409){
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(loc.error_email_in_use)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(loc.error_user_data)));
+    } else if (response.statusCode == 409) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(loc.error_email_in_use)));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(loc.error_register)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(loc.error_register)));
     }
   }
 
@@ -102,7 +106,9 @@ class _AccessScreenState extends State<AccessScreen> {
       final data = jsonDecode(response.body);
       final token = data['token'];
       if (token == null) {
-        // Manejar error token nulo
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(loc.token_bearer_required)));
         return;
       }
       final prefs = await SharedPreferences.getInstance();
@@ -110,7 +116,10 @@ class _AccessScreenState extends State<AccessScreen> {
 
       final userResponse = await http.get(
         Uri.parse('$_baseUrl/users/accountDetails'),
-        headers: {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'},
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
       );
 
       if (userResponse.statusCode == 200) {
@@ -123,9 +132,9 @@ class _AccessScreenState extends State<AccessScreen> {
           await prefs.setString('username', username);
           await prefs.setString('userId', userId);
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(loc.login_success)),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(loc.login_success)));
 
           Navigator.push(
             context,
@@ -135,9 +144,9 @@ class _AccessScreenState extends State<AccessScreen> {
         }
       }
     } else if (response.statusCode == 404) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(loc.login_wrong_credentials)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(loc.login_wrong_credentials)));
       return;
     }
 
@@ -168,15 +177,16 @@ class _AccessScreenState extends State<AccessScreen> {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           title: Text(
-            loc.account_title, // 'Cuenta'
+            loc.account_title,
             style: const TextStyle(color: Colors.white),
           ),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const HomeScreen()),
-            ),
+            onPressed:
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const HomeScreen()),
+                ),
           ),
         ),
         body: Padding(
@@ -188,7 +198,7 @@ class _AccessScreenState extends State<AccessScreen> {
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
-                  labelText: loc.email, // 'Introduce tu correo electrónico'
+                  labelText: loc.email,
                   filled: true,
                   fillColor: Colors.white,
                   border: const OutlineInputBorder(),
@@ -199,7 +209,7 @@ class _AccessScreenState extends State<AccessScreen> {
                 controller: _passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
-                  labelText: loc.password, // 'Introduce tu contraseña'
+                  labelText: loc.password,
                   filled: true,
                   fillColor: Colors.white,
                   border: const OutlineInputBorder(),
@@ -229,12 +239,15 @@ class _AccessScreenState extends State<AccessScreen> {
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.transparent,
                         shadowColor: Colors.transparent,
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 12,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: Text(loc.register_button), // 'Regístrate'
+                      child: Text(loc.register_button),
                     ),
                   ),
                   Container(
@@ -257,12 +270,15 @@ class _AccessScreenState extends State<AccessScreen> {
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.transparent,
                         shadowColor: Colors.transparent,
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 12,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: Text(loc.login_button), // 'Iniciar sesión'
+                      child: Text(loc.login_button),
                     ),
                   ),
                 ],

@@ -1,8 +1,9 @@
+import 'package:picross_app/models/game_state.dart';
+import 'package:picross_app/widgets/grid_cell.dart';
+import 'package:picross_app/utils/hints.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/game_state.dart';
-import '../widgets/grid_cell.dart';
-import '../utils/hints.dart';
 
 class PicrossGrid extends StatelessWidget {
   final List<List<int>> solution;

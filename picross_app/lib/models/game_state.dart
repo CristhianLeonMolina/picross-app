@@ -1,14 +1,17 @@
-import 'dart:async';
-import 'dart:convert';
-import 'package:flutter/widgets.dart'; // para BuildContext
 import 'package:picross_app/services/api_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../services/time_service.dart';
-import 'package:http/http.dart' as http;
-// Importa el archivo generado de localización (ajusta el import según tu proyecto)
 import 'package:picross_app/l10n/app_localizations.dart';
 
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/widgets.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:http/http.dart' as http;
+
 enum CellState { empty, filled, marked }
+
 enum InteractionMode { fill, mark }
 
 class GameState extends ChangeNotifier {
@@ -28,11 +31,46 @@ class GameState extends ChangeNotifier {
   String _message = "";
   int? _points;
 
-  final BuildContext context; // Necesario para obtener localizaciones
+  final BuildContext context;
 
   GameState(this._size, this._solution, this.context) {
-    //TODO: eliminar esta linea cuando se vaya a hacer el release
-    print(_solution); //! Esta linea se usa para mostrar la solución en el modo debug
+    //!----------------------------------------------------------
+    //!-------------------------DEBUG----------------------------
+    //!----------------------------------------------------------
+
+    //* Esta linea se usa para mostrar la solución
+    debugPrint(_solution.toString());
+
+    //* Probar la API
+    Future<void> testApiConnection() async {
+      final url = Uri.parse(baseUrl);
+
+      try {
+        final response = await http.get(url);
+
+        if (response.statusCode == 200) {
+          debugPrint(
+            getLocalizedString('connection_success', {
+              'responseBody': response.body,
+            }),
+          );
+        } else {
+          debugPrint(
+            getLocalizedString('connection_error_code', {
+              'statusCode': response.statusCode.toString(),
+            }),
+          );
+        }
+      } catch (e) {
+        debugPrint(
+          getLocalizedString('connection_error', {'error': e.toString()}),
+        );
+      }
+    }
+
+    //!----------------------------------------------------------
+    //!----------------------------------------------------------
+    //!----------------------------------------------------------
 
     testApiConnection();
 
@@ -48,7 +86,6 @@ class GameState extends ChangeNotifier {
     _startTimer();
   }
 
-  // Helper para obtener texto localizado
   String getLocalizedString(String key, [Map<String, String>? params]) {
     final localizations = AppLocalizations.of(context)!;
     switch (key) {
@@ -67,11 +104,10 @@ class GameState extends ChangeNotifier {
       case 'connection_error':
         return localizations.connection_error(params?['error'] ?? '');
       default:
-        return key; // fallback
+        return key;
     }
   }
 
-  // Getters públicos
   int get size => _size;
   int? get points => _points;
   String? get message => _message;
@@ -85,7 +121,7 @@ class GameState extends ChangeNotifier {
   CellState getCellState(int row, int col) => _cellStates[row][col];
 
   void toggleCell(int row, int col) {
-    if (_isCompleted) return; // No cambiar si ya completado
+    if (_isCompleted) return;
 
     if (_cellStates[row][col] != CellState.empty) return;
 
@@ -103,26 +139,23 @@ class GameState extends ChangeNotifier {
 
   void toggleMode() {
     _mode =
-        _mode == InteractionMode.fill ? InteractionMode.mark : InteractionMode.fill;
+        _mode == InteractionMode.fill
+            ? InteractionMode.mark
+            : InteractionMode.fill;
     notifyListeners();
   }
 
   Future<void> _checkCompletion() async {
-    // Verificamos que todas las casillas que deben estar rellenas están rellenas correctamente
     for (int row = 0; row < _size; row++) {
       for (int col = 0; col < _size; col++) {
         if (_solution[row][col] == 1) {
           if (_cellStates[row][col] == CellState.empty) {
-            // Alguna casilla que debería estar rellena no lo está, seguimos jugando
             return;
           }
         }
       }
     }
 
-    // Aquí todas las casillas que deben estar rellenas están rellenas
-
-    // Comprobamos si hay errores en esas casillas (por ejemplo, que alguna esté marcada en vez de rellenada)
     int errors = 0;
     for (int row = 0; row < _size; row++) {
       for (int col = 0; col < _size; col++) {
@@ -140,17 +173,16 @@ class GameState extends ChangeNotifier {
     _timer?.cancel();
 
     if (errors > 0) {
-      _message = getLocalizedString('game_lost'); // "¡Has perdido!"
+      _message = getLocalizedString('game_lost');
     } else {
       if (_bestTime == null || _currentTime < _bestTime!) {
         _bestTime = _currentTime;
         _saveBestTime();
       }
-      _message = getLocalizedString('game_won'); // "¡Has ganado!"
+      _message = getLocalizedString('game_won');
     }
 
-    // ✅ Enviar puntuación al servidor
-    final seed = base64Encode(utf8.encode(jsonEncode(_solution))); // Genera un ID simple
+    final seed = base64Encode(utf8.encode(jsonEncode(_solution)));
     final completionTime = _currentTime;
     final errorsCount = errors;
     final width = _size;
@@ -183,22 +215,6 @@ class GameState extends ChangeNotifier {
     });
   }
 
-  Future<void> testApiConnection() async {
-    final url = Uri.parse(baseUrl);
-
-    try {
-      final response = await http.get(url);
-
-      if (response.statusCode == 200) {
-        print(getLocalizedString('connection_success', {'responseBody': response.body}));
-      } else {
-        print(getLocalizedString('connection_error_code', {'statusCode': response.statusCode.toString()}));
-      }
-    } catch (e) {
-      print(getLocalizedString('connection_error', {'error': e.toString()}));
-    }
-  }
-
   String _formatTime(int seconds) {
     final minutes = seconds ~/ 60;
     final secs = seconds % 60;
@@ -206,24 +222,19 @@ class GameState extends ChangeNotifier {
   }
 
   Future<void> _saveBestTime() async {
-    // guardar localmente
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final currentTime = _currentTime;
-    final key = 'best_time_$size'; 
+    final key = 'best_time_$size';
     final bestTime = prefs.getInt(key);
 
     if (bestTime == null || currentTime < bestTime) {
       await prefs.setInt(key, currentTime);
     }
-
-    // guardar en API
-    final timeService = TimeService();
-    await timeService.saveTime(size, currentTime);
   }
 
   Future<void> _loadBestTime() async {
     final prefs = await SharedPreferences.getInstance();
-    _bestTime = prefs.getInt('best_time_$_size'); 
+    _bestTime = prefs.getInt('best_time_$_size');
     notifyListeners();
   }
 
@@ -233,22 +244,7 @@ class GameState extends ChangeNotifier {
     super.dispose();
   }
 
-  // Metodo para borrar todos los tiempos (debug)
-  Future<void> clearAllBestTimes() async {
-    final prefs = await SharedPreferences.getInstance();
-    // Supongamos que los tamaños usados son 5, 10, 15, 20
-    final sizes = [5, 10, 15, 20];
-
-    for (var s in sizes) {
-      await prefs.remove('best_time_$s');
-    }
-
-    _bestTime = null; // Limpiar el mejor tiempo actual en esta instancia
-    notifyListeners();
-  }
-
   void _checkLinesCompletion() {
-    // Revisa filas
     for (int row = 0; row < _size; row++) {
       bool rowCorrect = true;
       for (int col = 0; col < _size; col++) {
@@ -260,7 +256,6 @@ class GameState extends ChangeNotifier {
       completedRows[row] = rowCorrect;
     }
 
-    // Revisa columnas
     for (int col = 0; col < _size; col++) {
       bool colCorrect = true;
       for (int row = 0; row < _size; row++) {
@@ -348,10 +343,11 @@ class GameState extends ChangeNotifier {
       }),
     );
 
+    //! Información para debug
     if (response.statusCode == 200) {
-      print('Puntuación guardada correctamente');
+      debugPrint('Puntuación guardada correctamente');
     } else {
-      print('Error al enviar puntuación: ${response.body}');
+      debugPrint('Error al enviar puntuación: ${response.body}');
     }
   }
 
