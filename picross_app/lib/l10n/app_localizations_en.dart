@@ -187,28 +187,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get instructions_title => 'Instructions';
 
   @override
-  String get whats_nonogram_title => 'What Are Nonograms? A Complete Beginner\'s Guide';
+  String get whats_nonogram_title =>
+      'What Are Nonograms? A Complete Beginner\'s Guide';
 
   @override
-  String get whats_nonogram_body => 'A nonogram is a type of logic puzzle that consists of a rectangular grid of squares, with numerical clues aligned along the rows and columns. The goal is to determine which squares should be filled to eventually uncover a hidden pixel-style image. The puzzle challenges players to use logic and deduction rather than guesswork to complete it successfully.\n\nThe numbers provided are not random—they represent sequences of filled squares. For example, a clue of \'5 2\' in a row means there will be a group of five filled cells, followed by at least one blank cell, and then a group of two filled cells. However, the placement of these blocks is not initially clear, which is where your reasoning skills come into play.\n\nThis type of picture logic puzzle requires no prior math skills, just patience and logical thinking. With each square you fill (or exclude), you get closer to completing a hidden illustration—one of the most rewarding parts of solving nonograms.';
+  String get whats_nonogram_body =>
+      'A nonogram is a type of logic puzzle that consists of a rectangular grid of squares, with numerical clues aligned along the rows and columns. The goal is to determine which squares should be filled to eventually uncover a hidden pixel-style image. The puzzle challenges players to use logic and deduction rather than guesswork to complete it successfully.\n\nThe numbers provided are not random—they represent sequences of filled squares. For example, a clue of \'5 2\' in a row means there will be a group of five filled cells, followed by at least one blank cell, and then a group of two filled cells. However, the placement of these blocks is not initially clear, which is where your reasoning skills come into play.\n\nThis type of picture logic puzzle requires no prior math skills, just patience and logical thinking. With each square you fill (or exclude), you get closer to completing a hidden illustration—one of the most rewarding parts of solving nonograms.';
 
   @override
   String get how_to_play_title => 'How to Play Nonograms: Step-by-Step';
 
   @override
-  String get how_to_play_body => 'Learning how to play a nonogram puzzle can seem tricky at first, but once you understand the system behind it, you\'ll be hooked. The basic principle is to use the clues to determine which squares to fill in. There\'s no guessing—just methodical analysis and deduction.\n\nStart by identifying rows or columns where the clues take up the full width. For example, in a 10x10 grid, a row with a clue \'10\' clearly means all 10 cells are filled. Rows like \'9\' or \'8\' will also have very limited positions where the blocks can go, making them a great starting point. Use this logic to mark what you\'re sure of.\n\nAs you work through the puzzle, use the gray squares to mark empty squares. This visual aid helps eliminate possibilities and focus your attention. As more clues align, you\'ll unlock new sections. The beauty of the nonogram puzzle is in the slow unveiling of the image—like solving a mystery one square at a time.';
+  String get how_to_play_body =>
+      'Learning how to play a nonogram puzzle can seem tricky at first, but once you understand the system behind it, you\'ll be hooked. The basic principle is to use the clues to determine which squares to fill in. There\'s no guessing—just methodical analysis and deduction.\n\nStart by identifying rows or columns where the clues take up the full width. For example, in a 10x10 grid, a row with a clue \'10\' clearly means all 10 cells are filled. Rows like \'9\' or \'8\' will also have very limited positions where the blocks can go, making them a great starting point. Use this logic to mark what you\'re sure of.\n\nAs you work through the puzzle, use the gray squares to mark empty squares. This visual aid helps eliminate possibilities and focus your attention. As more clues align, you\'ll unlock new sections. The beauty of the nonogram puzzle is in the slow unveiling of the image—like solving a mystery one square at a time.';
 
   @override
   String get basic_rules_title => 'Nonogram Puzzle Rules for Beginners';
 
   @override
-  String get basic_rules_body => 'The golden rule in any nonogram is: never guess. Every move should be based on logic. If the clue says \'3 2\', you cannot assume where the 3 and the 2 go without testing all possible placements and cross-checking with intersecting clues. A single mistake can throw off your entire puzzle.\n\nAlways work on both axes—rows and columns—simultaneously. This cross-referencing is key to advancing through difficult puzzles. The challenge scales with larger grids and more complex clue patterns, but the satisfaction also grows with each completed puzzle.';
+  String get basic_rules_body =>
+      'The golden rule in any nonogram is: never guess. Every move should be based on logic. If the clue says \'3 2\', you cannot assume where the 3 and the 2 go without testing all possible placements and cross-checking with intersecting clues. A single mistake can throw off your entire puzzle.\n\nAlways work on both axes—rows and columns—simultaneously. This cross-referencing is key to advancing through difficult puzzles. The challenge scales with larger grids and more complex clue patterns, but the satisfaction also grows with each completed puzzle.';
 
   @override
   String get advices_title => 'Logic Puzzle Tips to Improve Your Strategy';
 
   @override
-  String get advices_body => 'If you\'re stuck, revisit previously marked rows and columns. New information often helps solve older sections. Use \'edge logic\', focusing on rows or columns with clues that are long enough to touch both edges of the grid. This tactic is especially useful in mid-size puzzles.\n\nDon\'t hesitate to lightly test possibilities using pencil marks or digital tools—just avoid finalizing moves until you\'re sure. As you practice, you\'ll naturally develop intuition for patterns and improve your speed and accuracy.';
+  String get advices_body =>
+      'If you\'re stuck, revisit previously marked rows and columns. New information often helps solve older sections. Use \'edge logic\', focusing on rows or columns with clues that are long enough to touch both edges of the grid. This tactic is especially useful in mid-size puzzles.\n\nDon\'t hesitate to lightly test possibilities using pencil marks or digital tools—just avoid finalizing moves until you\'re sure. As you practice, you\'ll naturally develop intuition for patterns and improve your speed and accuracy.';
 
   @override
   String get language_title => 'Language';
