@@ -60,11 +60,9 @@ class _AccessScreenState extends State<AccessScreen> {
         if (userData['success'] == true) {
           final datos = userData['datos'];
           final username = datos['username'] ?? '';
-          final userId = int.tryParse('${datos['id']}') ?? 0;
 
           await UserService.initUserSession(
             token: token,
-            userId: userId,
             username: username,
           );
 

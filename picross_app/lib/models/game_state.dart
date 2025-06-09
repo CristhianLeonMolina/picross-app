@@ -8,7 +8,7 @@ import 'package:flutter/widgets.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:http/http.dart' as http;
+//import 'package:http/http.dart' as http;
 
 enum CellState { empty, filled, marked }
 
@@ -34,45 +34,45 @@ class GameState extends ChangeNotifier {
   final BuildContext context;
 
   GameState(this._size, this._solution, this.context) {
-    //!----------------------------------------------------------
-    //!-------------------------DEBUG----------------------------
-    //!----------------------------------------------------------
+    // //!----------------------------------------------------------
+    // //!-------------------------DEBUG----------------------------
+    // //!----------------------------------------------------------
 
-    //* Esta linea se usa para mostrar la solución
-    debugPrint(_solution.toString());
+    // //* Esta linea se usa para mostrar la solución
+    // print(_solution.toString());
 
-    //* Probar la API
-    Future<void> testApiConnection() async {
-      final url = Uri.parse(baseUrl);
+    // //* Probar la API
+    // Future<void> testApiConnection() async {
+    //   final url = Uri.parse(baseUrl);
 
-      try {
-        final response = await http.get(url);
+    //   try {
+    //     final response = await http.get(url);
 
-        if (response.statusCode == 200) {
-          debugPrint(
-            getLocalizedString('connection_success', {
-              'responseBody': response.body,
-            }),
-          );
-        } else {
-          debugPrint(
-            getLocalizedString('connection_error_code', {
-              'statusCode': response.statusCode.toString(),
-            }),
-          );
-        }
-      } catch (e) {
-        debugPrint(
-          getLocalizedString('connection_error', {'error': e.toString()}),
-        );
-      }
-    }
+    //     if (response.statusCode == 200) {
+    //       print(
+    //         getLocalizedString('connection_success', {
+    //           'responseBody': response.body,
+    //         }),
+    //       );
+    //     } else {
+    //       print(
+    //         getLocalizedString('connection_error_code', {
+    //           'statusCode': response.statusCode.toString(),
+    //         }),
+    //       );
+    //     }
+    //   } catch (e) {
+    //     print(
+    //       getLocalizedString('connection_error', {'error': e.toString()}),
+    //     );
+    //   }
+    // }
 
-    //!----------------------------------------------------------
-    //!----------------------------------------------------------
-    //!----------------------------------------------------------
+    // testApiConnection();
 
-    testApiConnection();
+    // //!----------------------------------------------------------
+    // //!----------------------------------------------------------
+    // //!----------------------------------------------------------
 
     _cellStates = List.generate(
       _size,
@@ -326,29 +326,30 @@ class GameState extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     if (token == null) return;
+    
+    // //! Información para debug
+    // final response = await http.post(
+    //   Uri.parse('$baseUrl/users/score'),
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Authorization': 'Bearer $token',
+    //   },
+    //   body: jsonEncode({
+    //     'seed': seed,
+    //     'completionTime': completionTime,
+    //     'errorsCount': errorsCount,
+    //     'width': width,
+    //     'height': height,
+    //     'points': points,
+    //   }),
+    // );
 
-    final response = await http.post(
-      Uri.parse('$baseUrl/users/score'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode({
-        'seed': seed,
-        'completionTime': completionTime,
-        'errorsCount': errorsCount,
-        'width': width,
-        'height': height,
-        'points': points,
-      }),
-    );
-
-    //! Información para debug
-    if (response.statusCode == 200) {
-      debugPrint('Puntuación guardada correctamente');
-    } else {
-      debugPrint('Error al enviar puntuación: ${response.body}');
-    }
+    // if (response.statusCode == 200) {
+    //   print('Puntuación guardada correctamente');
+    // } else {
+    //   print('Error al enviar puntuación: ${response.body}');
+    // }
+    // //!-------------------------
   }
 
   int _calculatePoints(int time, int errors, int size) {

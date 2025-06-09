@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
     final provider = Provider.of<LocaleProvider>(context);
 
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: true,
       title: 'Picross App',
       locale: provider.locale,
       supportedLocales: L10n.all,

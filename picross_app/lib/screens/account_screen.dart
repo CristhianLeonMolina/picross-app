@@ -84,7 +84,9 @@ class _AccountScreenState extends State<AccountScreen> {
       setState(() {
         _profileImage = image;
       });
-      debugPrint('Imagen seleccionada: ${image.path}');
+      
+      // //! DEBUG
+      // print('Imagen seleccionada: ${image.path}');
     }
   }
 
@@ -126,42 +128,37 @@ class _AccountScreenState extends State<AccountScreen> {
       },
     );
 
-    //!----------DEBUG----------
-    debugPrint('Status: ${response.statusCode}');
-    debugPrint('Headers: ${response.headers}');
-    debugPrint('Body: ${response.body}');
-    //!-------------------------
+    // //!----------DEBUG----------
+    // print('Status: ${response.statusCode}');
+    // print('Headers: ${response.headers}');
+    // print('Body: ${response.body}');
+    // //!-------------------------
 
     if (userResponse.statusCode == 200) {
       final userData = jsonDecode(userResponse.body);
       if (userData['success'] == true) {
         final datos = userData['datos'];
-
         final username = datos['username'] ?? '';
-        final userId = datos['id'];
 
-        if (userId is int) {
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setString('username', username);
-          await prefs.setInt('userId', userId);
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('username', username);
 
-          if (response.statusCode == 200 && resBody['success'] == true) {
-            await UserService.initUserSession(
-              token: token,
-              userId: userId,
-              username: username,
-            );
+        if (response.statusCode == 200 && resBody['success'] == true) {
+          await UserService.initUserSession(
+            token: token,
+            username: username,
+          );
 
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(loc.edit_success)));
-          } else {
-            final msg = resBody['message'] ?? loc.edit_error;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('${loc.update_error}: $msg')),
-            );
-          }
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(loc.edit_success)));
+        } else {
+          final msg = resBody['message'] ?? loc.edit_error;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('${loc.update_error}: $msg')),
+          );
         }
+        
       }
     }
   }

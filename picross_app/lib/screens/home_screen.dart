@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dart:io';
 
@@ -24,25 +24,25 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  //!----------------------------------------------------------
-  //!-------------------------DEBUG----------------------------
-  //!----------------------------------------------------------
+  // //!----------------------------------------------------------
+  // //!-------------------------DEBUG----------------------------
+  // //!----------------------------------------------------------
 
-  //* Metodo para borrar los tiempos y la cuenta guardada
-  static Future<void> clearAllBestTimes() async {
-    final prefs = await SharedPreferences.getInstance();
-    final sizes = [5, 10, 15, 20];
-    for (var s in sizes) {
-      await prefs.remove('bestTime_$s');
-    }
+  // //* Metodo para borrar los tiempos y la cuenta guardada
+  // static Future<void> clearAllBestTimes() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final sizes = [5, 10, 15, 20];
+  //   for (var s in sizes) {
+  //     await prefs.remove('bestTime_$s');
+  //   }
 
-    final prefs2 = await SharedPreferences.getInstance();
-    await prefs2.clear();
-  }
+  //   final prefs2 = await SharedPreferences.getInstance();
+  //   await prefs2.clear();
+  // }
 
-  //!----------------------------------------------------------
-  //!----------------------------------------------------------
-  //!----------------------------------------------------------
+  // //!----------------------------------------------------------
+  // //!----------------------------------------------------------
+  // //!----------------------------------------------------------
 
   XFile? _profileImage;
 
@@ -54,7 +54,9 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _profileImage = image;
       });
-      debugPrint('Imagen seleccionada: ${image.path}');
+
+      // //! DEBUG
+      // print('Imagen seleccionada: ${image.path}');
     }
   }
 
@@ -183,20 +185,20 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
-          //! Botón para borrar los tiempos y la cuenta guardada (DEBUG)
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.delete_forever),
-              tooltip: loc.home_delete_best_times_tooltip,
-              onPressed: () async {
-                await clearAllBestTimes();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(loc.home_delete_best_times_message)),
-                );
-              },
-            ),
-          ],
-          //!-----------------------------------------------------------
+          // //! Botón para borrar los tiempos y la cuenta guardada (DEBUG)
+          // actions: [
+          //   IconButton(
+          //     icon: const Icon(Icons.delete_forever),
+          //     tooltip: loc.home_delete_best_times_tooltip,
+          //     onPressed: () async {
+          //       await clearAllBestTimes();
+          //       ScaffoldMessenger.of(context).showSnackBar(
+          //         SnackBar(content: Text(loc.home_delete_best_times_message)),
+          //       );
+          //     },
+          //   ),
+          // ],
+          // //!-----------------------------------------------------------
         ),
         body: Center(
           child: Column(
