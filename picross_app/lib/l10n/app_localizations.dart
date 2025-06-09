@@ -125,6 +125,12 @@ abstract class AppLocalizations {
   /// **'User registration failed.'**
   String get error_register;
 
+  /// No description provided for @error_email_in_use.
+  ///
+  /// In en, this message translates to:
+  /// **'This email is alredy in use'**
+  String get error_email_in_use;
+
   /// No description provided for @login_success.
   ///
   /// In en, this message translates to:
@@ -137,11 +143,29 @@ abstract class AppLocalizations {
   /// **'Incorrect credentials'**
   String get login_wrong_credentials;
 
+  /// No description provided for @token_bearer_required.
+  ///
+  /// In en, this message translates to:
+  /// **'The Token Bearer is required'**
+  String get token_bearer_required;
+
+  /// No description provided for @token_invalid_or_exired.
+  ///
+  /// In en, this message translates to:
+  /// **'The Token is invalid or is expired'**
+  String get token_invalid_or_exired;
+
+  /// No description provided for @user_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'The user was not found'**
+  String get user_not_found;
+
   /// No description provided for @server_error.
   ///
   /// In en, this message translates to:
-  /// **'Server error: {code}'**
-  String server_error(Object code);
+  /// **'Server error'**
+  String get server_error;
 
   /// No description provided for @email_hint.
   ///
@@ -320,13 +344,13 @@ abstract class AppLocalizations {
   /// No description provided for @credits_title.
   ///
   /// In en, this message translates to:
-  /// **'Credits'**
+  /// **'Powered by:'**
   String get credits_title;
 
   /// No description provided for @credits_body.
   ///
   /// In en, this message translates to:
-  /// **'Here the application credits will be shown.'**
+  /// **'Ivan Barrasa & Cristhian Leon'**
   String get credits_body;
 
   /// No description provided for @restart_game_tooltip.

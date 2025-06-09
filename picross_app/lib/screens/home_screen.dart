@@ -72,53 +72,77 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
+          child: Column(
             children: [
-              DrawerHeader(
-                decoration: const BoxDecoration(
-                  color: Color.fromARGB(255, 40, 80, 160),
-                ),
-                child: Text(
-                  loc.home_menu,
-                  style: const TextStyle(color: Colors.white, fontSize: 24),
-                ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.language),
-                title: Text(loc.language_title),
-                trailing: Image.asset(
-                  Localizations.localeOf(context).languageCode == 'es'
-                      ? 'assets/icons/es.png'
-                      : 'assets/icons/en.png',
-                  width: 32,
-                  height: 32,
-                ),
-                onTap: () {
-                  final currentLocale = Localizations.localeOf(context);
-                  final newLocale = currentLocale.languageCode == 'es'
-                      ? const Locale('en')
-                      : const Locale('es');
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  children: [
+                    DrawerHeader(
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(255, 40, 80, 160),
+                      ),
+                      child: Text(
+                        loc.home_menu,
+                        style: const TextStyle(color: Colors.white, fontSize: 24),
+                      ),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.language),
+                      title: Text(loc.language_title),
+                      trailing: Image.asset(
+                        Localizations.localeOf(context).languageCode == 'es'
+                            ? 'assets/icons/es.png'
+                            : 'assets/icons/en.png',
+                        width: 32,
+                        height: 32,
+                      ),
+                      onTap: () {
+                        final currentLocale = Localizations.localeOf(context);
+                        final newLocale = currentLocale.languageCode == 'es'
+                            ? const Locale('en')
+                            : const Locale('es');
 
-                  context.read<LocaleProvider>().setLocale(newLocale);
-                  Navigator.pop(context);
-                },
+                        context.read<LocaleProvider>().setLocale(newLocale);
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.help_outline),
+                      title: Text(loc.instructions_title),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => const InstructionsScreen()));
+                      },
+                    ),
+                  ],
+                ),
               ),
-              ListTile(
-                leading: const Icon(Icons.help_outline),
-                title: Text(loc.instructions_title),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const InstructionsScreen()));
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.info_outline),
-                title: Text(loc.credits_title),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const CreditsScreen()));
-                },
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      loc.credits_title,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      loc.credits_body,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

@@ -4,12 +4,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'api_service.dart';
 
 class TimeService {
+  final baseUrl = ApiConfig.baseUrl;
+
   Future<void> saveTime(int puzzleSize, int timeInSeconds) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
 
     final response = await http.post(
-      Uri.parse('${ApiConfig.baseUrl}/times'),
+      Uri.parse('$baseUrl/times'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -30,7 +32,7 @@ class TimeService {
     final token = prefs.getString('token');
 
     final response = await http.get(
-      Uri.parse('${ApiConfig.baseUrl}/times'),
+      Uri.parse('$baseUrl/times'),
       headers: {
         'Authorization': 'Bearer $token',
       },

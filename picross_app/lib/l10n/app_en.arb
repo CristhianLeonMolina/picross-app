@@ -6,9 +6,13 @@
   "error_fill_fields": "Please fill in all fields.",
   "error_user_data": "Failed to retrieve user data.",
   "error_register": "User registration failed.",
+  "error_email_in_use" : "This email is alredy in use",
   "login_success": "Login successful",
   "login_wrong_credentials": "Incorrect credentials",
-  "server_error": "Server error: {code}",
+  "token_bearer_required": "The Token Bearer is required",
+  "token_invalid_or_exired": "The Token is invalid or is expired",
+  "user_not_found": "The user was not found",
+  "server_error": "Server error",
   "email_hint": "Enter your email address",
   "password_hint": "Enter your password",
   "register_button": "Register",
@@ -54,8 +58,8 @@
 
   "your_profile": "Your profile",
 
-  "credits_title": "Credits",
-  "credits_body": "Here the application credits will be shown.",
+  "credits_title": "Powered by:",
+  "credits_body":  "Ivan Barrasa & Cristhian Leon",
 
   "restart_game_tooltip": "Restart game",
   "best_time": "Best time",

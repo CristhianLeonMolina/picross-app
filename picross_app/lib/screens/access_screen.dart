@@ -75,6 +75,10 @@ class _AccessScreenState extends State<AccessScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(loc.error_user_data)),
       );
+    } else if (response.statusCode == 409){
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(loc.error_email_in_use)),
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(loc.error_register)),
@@ -84,8 +88,9 @@ class _AccessScreenState extends State<AccessScreen> {
 
   Future<void> _login() async {
     final loc = AppLocalizations.of(context)!;
+    final url = Uri.parse('$_baseUrl/users/login');
     final response = await http.post(
-      Uri.parse('$_baseUrl/users/login'),
+      url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'email': _emailController.text.trim(),
@@ -129,7 +134,7 @@ class _AccessScreenState extends State<AccessScreen> {
           return;
         }
       }
-    } else if (response.statusCode == 401) {
+    } else if (response.statusCode == 404) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(loc.login_wrong_credentials)),
       );

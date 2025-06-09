@@ -33,6 +33,7 @@ class _AccountScreenState extends State<AccountScreen> {
     if (token == null) return; // no token, no hacemos nada
 
     final String baseUrl = ApiConfig.baseUrl;
+    final loc = AppLocalizations.of(context)!;
 
     final response = await http.get(
       Uri.parse('$baseUrl/users/accountDetails'), // cambia a tu URL real
@@ -48,8 +49,18 @@ class _AccountScreenState extends State<AccountScreen> {
           _emailController.text = datos['email'] ?? '';
         });
       }
-    } else {
-      //! manejar error (token inválido, etc)
+    } else if (response.statusCode == 400){
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(loc.token_bearer_required)),  // Traducción
+      );
+    } else if (response.statusCode == 401){
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(loc.token_invalid_or_exired)),  // Traducción
+      );
+    } else if (response.statusCode == 404){
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(loc.user_not_found)),  // Traducción
+      );
     }
   }
 
@@ -87,8 +98,9 @@ class _AccountScreenState extends State<AccountScreen> {
       return;
     }
 
+    final url = Uri.parse('$baseUrl/users/changeDetails');
     final response = await http.post(
-      Uri.parse('$baseUrl/users/changeDetails'), // reemplaza con tu URL real
+      url, 
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -203,9 +215,10 @@ class _AccountScreenState extends State<AccountScreen> {
                 );
                 return;
               }
-
+              
+              final url = Uri.parse('$baseUrl/users/changePassword');
               final response = await http.post(
-                Uri.parse('$baseUrl/users/changePassword'),
+                url,
                 headers: {
                   'Content-Type': 'application/json',
                   'Authorization': 'Bearer $token',

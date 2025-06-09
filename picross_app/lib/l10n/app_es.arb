@@ -6,8 +6,12 @@
   "error_fill_fields": "Por favor, completa todos los campos.",
   "error_user_data": "Error al obtener datos del usuario.",
   "error_register": "No se pudo registrar el usuario.",
+  "error_email_in_use" : "Este email ya está en uso",
   "login_success": "Inicio de sesión exitoso",
   "login_wrong_credentials": "Credenciales incorrectas",
+  "token_bearer_required": "Se requiere el Token Berear",
+  "token_invalid_or_exired": "El Token es invaliodo o está expirado",
+  "user_not_found": "No se ha encontrado el usuario",
   "server_error": "Error del servidor",
   "email_hint": "Introduce tu correo electrónico",
   "password_hint": "Introduce tu contraseña",
@@ -54,8 +58,8 @@
 
   "your_profile": "Tu perfil",
 
-  "credits_title": "Créditos",
-  "credits_body": "Aquí se mostrarán los créditos de la aplicación.",
+  "credits_title": "Desarrollado por:",
+  "credits_body":  "Ivan Barrasa y Cristhian Leon",
 
   "restart_game_tooltip": "Reiniciar partida",
   "best_time": "Mejor tiempo",

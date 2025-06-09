@@ -24,15 +24,25 @@ class AppLocalizationsEs extends AppLocalizations {
   String get error_register => 'No se pudo registrar el usuario.';
 
   @override
+  String get error_email_in_use => 'Este email ya está en uso';
+
+  @override
   String get login_success => 'Inicio de sesión exitoso';
 
   @override
   String get login_wrong_credentials => 'Credenciales incorrectas';
 
   @override
-  String server_error(Object code) {
-    return 'Error del servidor';
-  }
+  String get token_bearer_required => 'Se requiere el Token Berear';
+
+  @override
+  String get token_invalid_or_exired => 'El Token es invaliodo o está expirado';
+
+  @override
+  String get user_not_found => 'No se ha encontrado el usuario';
+
+  @override
+  String get server_error => 'Error del servidor';
 
   @override
   String get email_hint => 'Introduce tu correo electrónico';
@@ -126,10 +136,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get your_profile => 'Tu perfil';
 
   @override
-  String get credits_title => 'Créditos';
+  String get credits_title => 'Desarrollado por:';
 
   @override
-  String get credits_body => 'Aquí se mostrarán los créditos de la aplicación.';
+  String get credits_body => 'Ivan Barrasa y Cristhian Leon';
 
   @override
   String get restart_game_tooltip => 'Reiniciar partida';

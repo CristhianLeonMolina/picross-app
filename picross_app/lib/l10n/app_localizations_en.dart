@@ -24,15 +24,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_register => 'User registration failed.';
 
   @override
+  String get error_email_in_use => 'This email is alredy in use';
+
+  @override
   String get login_success => 'Login successful';
 
   @override
   String get login_wrong_credentials => 'Incorrect credentials';
 
   @override
-  String server_error(Object code) {
-    return 'Server error: $code';
-  }
+  String get token_bearer_required => 'The Token Bearer is required';
+
+  @override
+  String get token_invalid_or_exired => 'The Token is invalid or is expired';
+
+  @override
+  String get user_not_found => 'The user was not found';
+
+  @override
+  String get server_error => 'Server error';
 
   @override
   String get email_hint => 'Enter your email address';
@@ -126,10 +136,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get your_profile => 'Your profile';
 
   @override
-  String get credits_title => 'Credits';
+  String get credits_title => 'Powered by:';
 
   @override
-  String get credits_body => 'Here the application credits will be shown.';
+  String get credits_body => 'Ivan Barrasa & Cristhian Leon';
 
   @override
   String get restart_game_tooltip => 'Restart game';

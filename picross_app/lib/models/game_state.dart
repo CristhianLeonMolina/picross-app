@@ -209,7 +209,7 @@ class GameState extends ChangeNotifier {
     // guardar localmente
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final currentTime = _currentTime;
-    final key = 'best_time_$size'; // <- clave corregida
+    final key = 'best_time_$size'; 
     final bestTime = prefs.getInt(key);
 
     if (bestTime == null || currentTime < bestTime) {
@@ -223,7 +223,7 @@ class GameState extends ChangeNotifier {
 
   Future<void> _loadBestTime() async {
     final prefs = await SharedPreferences.getInstance();
-    _bestTime = prefs.getInt('best_time_$_size'); // <- clave corregida
+    _bestTime = prefs.getInt('best_time_$_size'); 
     notifyListeners();
   }
 
@@ -240,7 +240,7 @@ class GameState extends ChangeNotifier {
     final sizes = [5, 10, 15, 20];
 
     for (var s in sizes) {
-      await prefs.remove('best_time_$s'); // <- clave corregida
+      await prefs.remove('best_time_$s');
     }
 
     _bestTime = null; // Limpiar el mejor tiempo actual en esta instancia
